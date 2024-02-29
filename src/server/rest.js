@@ -29,7 +29,7 @@ module.exports = function restApiServer(app) {
             next(new CustomError("Ping Error", "NotFoundData", 500))
         }
     })
-    app.use("/user", userRoute)
+    app.use("/auth", userRoute)
 
     //=====================================================Throwing Zone
     app.use(notFound)
