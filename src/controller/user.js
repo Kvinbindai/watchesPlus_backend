@@ -113,8 +113,7 @@ module.exports.changePassword = async (req,res,next)=>{
 module.exports.getMe = async (req,res,next)=>{
     try {
         res.status(200).json({
-            message : "test"
-            // user : req.user 
+            user : req.user 
         })
     } catch (err) {
         next(err)
