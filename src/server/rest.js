@@ -10,6 +10,9 @@ const { notFound } = require("../middlewares/notFound")
 const { errorMiddlewares } = require("../middlewares/error")
 const CustomError = require("../config/error")
 const userRoute = require("../router/user")
+const orderRoute = require('../router/order')
+const brandRoute = require('../router/brand')
+const watchRoute = require('../router/watch')
 
 //=====================================================Server Zone
 module.exports = function restApiServer(app) {
@@ -30,6 +33,9 @@ module.exports = function restApiServer(app) {
         }
     })
     app.use("/auth", userRoute)
+    app.use('/order',orderRoute)
+    app.use('/brand',brandRoute)
+    app.use("/watch",watchRoute)
 
     //=====================================================Throwing Zone
     app.use(notFound)
