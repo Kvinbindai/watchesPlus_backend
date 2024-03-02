@@ -27,7 +27,7 @@ module.exports.login = async (req, res, next) => {
     try {
         const { email, password } = req.body
         // GET username from database
-        const user = await services.user.get({ email })
+        const user = await services.user.findUserByEmail(email)
         if (!user) throw new CustomError("username or password is wrong", "WRONG_INPUT", 400)
 
         // COMPARE password with database
@@ -103,6 +103,17 @@ module.exports.changePassword = async (req,res,next)=>{
         await services.user.updatePassword(req.body.email,req.body.password)
         res.status(200).json({
             message : "Change Password Complete"
+        })
+    } catch (err) {
+        next(err)
+    }
+    return
+}
+
+module.exports.getMe = async (req,res,next)=>{
+    try {
+        res.status(200).json({
+            user : req.user 
         })
     } catch (err) {
         next(err)
