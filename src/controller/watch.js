@@ -6,7 +6,7 @@ const fs = require("fs/promises");
 module.exports.getAll = async(req,res,next)=>{
     try{
         const data = await services.watch.getAllWatch()
-        return res.json({
+         res.json({
             message : "Get All Watch Complete",
             data
         })
@@ -20,7 +20,7 @@ module.exports.getOne = async(req,res,next)=>{
     try{
         const { watchId } = req.params
         const data = await services.watch.getOneWatch(watchId)
-        return res.json({
+         res.json({
             message : "Get One Watch Complete",
             data
         })
@@ -39,7 +39,7 @@ module.exports.createWatch = async(req,res,next)=>{ //เหลือต้อ�
             fs.unlink(req.file.path)
         }
         const data = await services.watch.addWatch(req.body)
-        return res.json({
+         res.json({
             message : "Create Watch Complete",
             data
         })
@@ -57,7 +57,7 @@ module.exports.editWatch = async(req,res,next)=>{
             fs.unlink(req.file.path)
         }
         const data = await services.watch.updateWatch(+watchId,req.body)
-        return res.json({
+         res.json({
             message : "Update Watch Complete",
             data
         })
@@ -71,7 +71,7 @@ module.exports.deleteWatch = async(req,res,next)=>{
     try{
         const { watchId } = req.params
         await services.watch.removeWatch(+watchId)
-        return res.json({
+        res.json({
             message : "Delete Watch Complete",
         })
     }catch(err){
