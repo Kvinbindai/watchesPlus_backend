@@ -4,6 +4,8 @@ const services = {
     brand : require('./brand'),
     watch : require('./watch'),
     upload : require('./upload'),
-    inventory : require('./inventory')
+    inventory : require('./inventory'),
+    wallet : require('./wallet'),
+    transaction : require('./transaction')
 }
 module.exports = services

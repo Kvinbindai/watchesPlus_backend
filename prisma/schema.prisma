@@ -58,6 +58,7 @@ enum TransactionType {
 enum OrderStatus {
   PENDING
   SUCCESS
+  CANCELED
 }
 
 model User {

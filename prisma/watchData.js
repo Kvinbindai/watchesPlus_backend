@@ -1,4 +1,4 @@
-module.exports.productData = [
+const data = [
   {
     brandId: 1,
     modelName: "Submariner",
@@ -343,3 +343,12 @@ module.exports.productData = [
       "A rugged and durable watch built to withstand harsh environments.",
   },
 ];
+
+module.exports.productData = data.map((e) => {
+  delete e.id
+return {
+  ...e,
+  watchImage:
+    "https://cdn.pixabay.com/photo/2014/07/31/23/00/wristwatch-407096_1280.jpg",
+};
+});
