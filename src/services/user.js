@@ -8,7 +8,14 @@ module.exports.createUser = async (data) => {
   const foundUser = await this.findUserByEmail(data.email);
   if (foundUser)
     throw new CustomError("Email is already Created", "WRONG USER", 400);
-  return await prisma.user.create({ data });
+  return await prisma.user.create({
+    data: {
+      ...data,
+      wallet: {
+        create: {},
+      },
+    },
+  });
 };
 module.exports.changePasswordWithEmail = async (email, password) =>
   await prisma.user.update({ where: { email }, data: { password } });

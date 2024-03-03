@@ -8,6 +8,7 @@ const morgan = require("morgan")
 
 const { notFound } = require("../middlewares/notFound")
 const { errorMiddlewares } = require("../middlewares/error")
+const clearPhoto = require('../middlewares/clearPhoto')
 const CustomError = require("../config/error")
 const userRoute = require("../router/user")
 const orderRoute = require('../router/order')
@@ -22,7 +23,7 @@ module.exports = function restApiServer(app) {
     app.use(json())
     app.use(urlencoded({ extended: false }))
     app.use(express.static("public"))
-
+    app.use(clearPhoto)
     //=====================================================Routing Zone
     app.use("/ping", (req, res, next) => {
         try {
@@ -36,6 +37,12 @@ module.exports = function restApiServer(app) {
     app.use('/order',orderRoute)
     app.use('/brand',brandRoute)
     app.use("/watch",watchRoute)
+
+
+    //================== Delete file in public/images
+
+    
+
 
     //=====================================================Throwing Zone
     app.use(notFound)

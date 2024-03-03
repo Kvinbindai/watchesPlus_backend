@@ -1,5 +1,8 @@
 const services = require("../services")
 
+const fs = require("fs/promises");
+
+
 module.exports.getAll = async(req,res,next)=>{
     try{
         const data = await services.watch.getAllWatch()
@@ -13,12 +16,12 @@ module.exports.getAll = async(req,res,next)=>{
     return
 }
 
-module.exports.getWatchById = async(req,res,next)=>{
+module.exports.getOne = async(req,res,next)=>{
     try{
         const { watchId } = req.params
         const data = await services.watch.getOneWatch(watchId)
         return res.json({
-            message : "Get All Watch Complete",
+            message : "Get One Watch Complete",
             data
         })
     }catch(err){
@@ -29,9 +32,12 @@ module.exports.getWatchById = async(req,res,next)=>{
 
 
 
-module.exports.createWatch = async(req,res,next)=>{
+module.exports.createWatch = async(req,res,next)=>{ //เหลือต้องมาใส่formDataกับuploadรูป ถ้
     try{
-        console.log(req.body)
+        if(req.file){
+            req.body.watchImage = await services.upload.upload(req.file.path)
+            fs.unlink(req.file.path)
+        }
         const data = await services.watch.addWatch(req.body)
         return res.json({
             message : "Create Watch Complete",
@@ -46,6 +52,10 @@ module.exports.createWatch = async(req,res,next)=>{
 module.exports.editWatch = async(req,res,next)=>{
     try{
         const { watchId } = req.params
+        if(req.file){
+            req.body.watchImage = await services.upload.upload(req.file.path)
+            fs.unlink(req.file.path)
+        }
         const data = await services.watch.updateWatch(+watchId,req.body)
         return res.json({
             message : "Update Watch Complete",
