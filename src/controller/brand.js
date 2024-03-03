@@ -4,7 +4,7 @@ const services = require("../services")
 module.exports.getAll = async (req,res,next)=>{
     try{
         const data = await services.brand.getAll()
-        return res.json({
+         res.json({
             message : "Get All Brand Complete",
             data
         })
@@ -18,7 +18,7 @@ module.exports.getOne = async (req,res,next)=>{
     try{
         const { brandId} = req.params
         const data = await services.brand.getBrandById(+brandId)
-        return res.json({
+        res.json({
             message : "Get One Brand Complete",
             data
         })
@@ -31,7 +31,7 @@ module.exports.getOne = async (req,res,next)=>{
 module.exports.addBrand = async(req,res,next)=>{
     try{
         const data = await services.brand.createBrand(req.body)
-        return res.json({
+       res.json({
             message : "Create Brand Complete",
             data
         })
@@ -45,7 +45,7 @@ module.exports.editBrand = async(req,res,next)=>{
     try{
         const { brandId} = req.params
         const data = await services.brand.updateBrand(+brandId,req.body)
-        return res.json({
+         res.json({
             message : "Update Brand Complete",
             data
         })
@@ -59,7 +59,7 @@ module.exports.deleteBrand = async(req,res,next)=>{
     try{
         const { brandId} = req.params
         await services.brand.removeBrand(+brandId)
-        return res.json({
+         res.json({
             message : "Delete Brand Complete",
         })
     }catch(err){
