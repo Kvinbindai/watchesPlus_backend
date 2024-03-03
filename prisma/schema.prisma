@@ -38,6 +38,8 @@ enum InventoryStatus {
   PENDING
   AVAILABLE
   SELLING
+  FAILED
+  SOLD
 }
 
 enum ShippingStatus {
@@ -56,6 +58,7 @@ enum TransactionType {
 enum OrderStatus {
   PENDING
   SUCCESS
+  CANCELED
 }
 
 model User {

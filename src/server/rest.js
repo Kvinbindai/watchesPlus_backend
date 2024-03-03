@@ -8,13 +8,15 @@ const morgan = require("morgan");
 
 const { notFound } = require("../middlewares/notFound");
 const { errorMiddlewares } = require("../middlewares/error");
-const authenticate = require("../middlewares/authenticate");
+const clearPhoto = require("../middlewares/clearPhoto");
 const CustomError = require("../config/error");
 const userRoute = require("../router/user");
-const livechatRoute = require("../router/livechat");
 const orderRoute = require("../router/order");
 const brandRoute = require("../router/brand");
 const watchRoute = require("../router/watch");
+const inventoryRoute = require("../router/inventory");
+const authenticate = require("../middlewares/authenticate");
+const livechatRoute = require("../router/livechat");
 
 //=====================================================Server Zone
 module.exports = function restApiServer(app) {
@@ -35,10 +37,10 @@ module.exports = function restApiServer(app) {
     }
   });
   app.use("/auth", userRoute);
-  app.use("/livechat", authenticate, livechatRoute);
   app.use("/order", orderRoute);
   app.use("/brand", brandRoute);
   app.use("/watch", watchRoute);
+  app.use("/livechat", authenticate, livechatRoute);
 
   //=====================================================Throwing Zone
   app.use(notFound);
