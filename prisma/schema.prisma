@@ -233,15 +233,15 @@ model TransactionWallet {
   id           Int             @id @default(autoincrement())
   fromWalletId Int?            @map("from_wallet_id")
   toWalletId   Int?            @map("to_wallet_id")
-  watchId      Int             @map("watch_id")
+  watchId      Int?            @map("watch_id")
   type         TransactionType
   price        Int
-  buyOrderId   Int             @unique @map("buy_order_id")
-  saleOrderId  Int             @unique @map("sale_order_id")
+  buyOrderId   Int?             @unique @map("buy_order_id")
+  saleOrderId  Int?             @unique @map("sale_order_id")
   createdAt    DateTime        @default(now()) @map("created_at")
-  watch        Watch           @relation(fields: [watchId], references: [id])
-  buyOrder     BuyOrder        @relation(fields: [buyOrderId], references: [id])
-  saleOrder    SaleOrder       @relation(fields: [saleOrderId], references: [id])
+  watch        Watch?           @relation(fields: [watchId], references: [id])
+  buyOrder     BuyOrder?        @relation(fields: [buyOrderId], references: [id])
+  saleOrder    SaleOrder?       @relation(fields: [saleOrderId], references: [id])
   fromWallet   Wallet?         @relation("fromWallet", fields: [fromWalletId], references: [id])
   toWallet     Wallet?         @relation("toWallet", fields: [toWalletId], references: [id])
 
