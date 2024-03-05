@@ -6,25 +6,25 @@ exports.findWalletByUserId = async (userId) =>
   await prisma.wallet.findUnique({ where: { userId } });
 
 exports.updateBuyerWallet = async (walletId, price) => {
-  const oldData = await prisma.wallet.findUnique({
-    where: { id: walletId },
-  });
   return await prisma.wallet.update({
     where: { id: walletId },
     data: {
-      amount: oldData.amount - price,
+      amount: {
+        decrement: price,
+      },
     },
   });
 };
 
 exports.updateSellerWallet = async (walletId, price) => {
-  const oldData = await prisma.wallet.findUnique({
-    where: { id: walletId },
-  });
   return await prisma.wallet.update({
-    where: { id: walletId },
+    where: {
+      id: walletId,
+    },
     data: {
-      amount: oldData.amount + price,
+      amount: {
+        increment: price,
+      },
     },
   });
 };

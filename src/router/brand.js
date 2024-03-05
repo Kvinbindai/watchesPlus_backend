@@ -5,13 +5,13 @@ const authenticateAdmin = require("../middlewares/authenticateAdmin")
 const { validateAddBrand, validateEditBrand } = require("../middlewares/validator/brand")
 const brandRoute = express.Router()
 
-brandRoute.use(authenticate,authenticateAdmin)
+
 
 brandRoute.get('/',c.brand.getAll)
 brandRoute.get('/:brandId',c.brand.getOne)
-brandRoute.post('/',validateAddBrand,c.brand.addBrand)
-brandRoute.patch('/:brandId',validateEditBrand,c.brand.editBrand)
-brandRoute.delete('/:brandId',c.brand.deleteBrand)
+brandRoute.post('/',authenticate,authenticateAdmin,validateAddBrand,c.brand.addBrand)
+brandRoute.patch('/:brandId',authenticate,authenticateAdmin,validateEditBrand,c.brand.editBrand)
+brandRoute.delete('/:brandId',authenticate,authenticateAdmin,c.brand.deleteBrand)
 
 
 
