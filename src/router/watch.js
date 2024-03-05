@@ -16,16 +16,16 @@ watchRoute.post(
   "/",
   authenticate,
   authenticateAdmin,
+  upload.single("watchImage"), //upload watchImage into public/images
   validateCreateWatch,
-  upload.single('watchImage'), //upload watchImage into public/images
   c.watch.createWatch
 );
 watchRoute.patch(
   "/:watchId",
   authenticate,
   authenticateAdmin,
+  upload.single("watchImage"),
   validateUpdateWatch,
-  upload.single('watchImage'),
   c.watch.editWatch
 );
 watchRoute.delete(
