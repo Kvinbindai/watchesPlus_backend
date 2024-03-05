@@ -1,11 +1,11 @@
 const prisma = require("../config/prisma");
 const { CustomError } = require("../config/error");
 
-
 module.exports.findSaleOrderToMatch = async (watchId, price) => {
-  return await prisma.saleOrder.findFirstOrThrow({
+  return await prisma.saleOrder.findFirst({
     where: {
       price: price,
+      status: "PENDING",
       inventory: {
         watchId: watchId,
       },
@@ -17,10 +17,10 @@ module.exports.findSaleOrderToMatch = async (watchId, price) => {
           user: {
             include: {
               wallet: {
-                select : {
-                  id : true
-                }
-              }
+                select: {
+                  id: true,
+                },
+              },
             },
           },
         },
@@ -30,55 +30,94 @@ module.exports.findSaleOrderToMatch = async (watchId, price) => {
 };
 
 module.exports.findBuyOrderToMatch = async (inventoryId, price) => {
-  const foundInventory = await prisma.inventory.findUnique({
-    where: { id: inventoryId },
-  });
-  return await prisma.buyOrder.findFirstOrThrow({
-    where: {
-      price,
-      watchId: foundInventory.watchId,
-    },
+  return await prisma.$transaction(async (tx) => {
+    const foundInventory = await tx.inventory.findUnique({
+      where: { id: inventoryId },
+    });
+
+    const foundOrder = await tx.buyOrder.findFirst({
+      where: {
+        price,
+        watchId: foundInventory.watchId,
+        status: "PENDING",
+      },
+    });
+    return foundOrder;
   });
 };
 
-module.exports.createBuyOrder = async (buyerWallet,body) => {
-  const updateBuyerWallet = await prisma.wallet.update({
-    where: { id: buyerWallet.id },
-    data: {
-      amount: buyerWallet.amount - body.price,
-    },
-  });
-  const createOrder = await prisma.buyOrder.create({ data: body });
-  return await Promise.all([updateBuyerWallet, createOrder]);
+module.exports.createBuyOrder = async (buyerWallet, body) => {
+  return await prisma.$transaction(async(tx)=>{
+    const updateBuyerWallet = await tx.wallet.update({
+      where: { id: buyerWallet.id },
+      data: {
+        amount: {
+          decrement : body.price
+        }
+      },
+    });
+    const createOrder = await tx.buyOrder.create({data : body})
+    return createOrder
+  })
 };
 
 module.exports.createSaleOrder = async (sellerId, inventoryId, price) => {
-  //1.หาของใน invnetory
-  const foundInventory = await prisma.inventory.findFirst({
-    where: {
-      id: inventoryId,
-      userId: sellerId,
-      status: "AVAILABLE",
-    },
+  return prisma.$transaction(async (tx) => {
+    //2. update inventory ที่ watchId นั้นให้่เป็น SELLING
+    const updateSellerInventory = await tx.inventory.update({
+      where: {
+        id: inventoryId,
+        userId: sellerId,
+      },
+      data: {
+        status: "SELLING",
+      },
+    });
+    //3. สร้าง saleOrder
+    const createSale = await tx.saleOrder.create({
+      data: {
+        inventoryId: inventoryId,
+        price,
+      },
+    });
+    return createSale
   });
-  if (!foundInventory)
-    throw new CustomError("Inventory Item Not Found", "NO_INVENTORY", 400);
-  //2. update inventory ที่ watchId นั้นให้่เป็น SELLING
-  const updateSellerInventory = await prisma.inventory.update({
-    where: {
-      id: inventoryId,
-      userId: sellerId,
-    },
-    data : {
-      status : "SELLING"
-    }
+};
+
+module.exports.updateBuyOrderToCancel = async (id) => {
+  return await prisma.$transaction(async (tx) => {
+    // 1.update buyorder to cancel
+    const updateBuyerOrder = await tx.buyOrder.update({
+      where: { id: id },
+      data: { status: "CANCELED" },
+    });
+    //2.คืนเงิน wallet
+    const refundWallet = await tx.wallet.update({
+      where: { id: updateBuyerOrder.walletId },
+      data: {
+        amount: {
+          increment: updateBuyerOrder.price,
+        },
+      },
+    });
+    return refundWallet;
   });
-  //3. สร้าง saleOrder
-  const createSale = await prisma.saleOrder.create({
-    data : {
-      inventoryId : inventoryId,
-      price 
-    }
-  })
-  return await Promise.all([updateSellerInventory,createSale])
+};
+
+module.exports.updateSaleOrderToCancel = async (id) => {
+  return await prisma.$transaction(async (tx) => {
+    // 1.update saleOrder to cancel
+    const updateSaleOrder = await tx.saleOrder.update({
+      where: { id: id },
+      data: { status: "CANCELED" },
+    });
+    //2.คืนของ inventory
+    const returnItem = await tx.inventory.update({
+      where: { id: updateSaleOrder.inventoryId },
+      data: {
+        status: "AVAILABLE",
+      },
+    });
+    return returnItem;
+  });
 };
