@@ -17,6 +17,7 @@ const watchRoute = require("../router/watch");
 const inventoryRoute = require("../router/inventory");
 const authenticate = require("../middlewares/authenticate");
 const livechatRoute = require("../router/livechat");
+// const socketServer = require("../server");
 
 //=====================================================Server Zone
 module.exports = function restApiServer(app) {
@@ -41,6 +42,7 @@ module.exports = function restApiServer(app) {
   app.use("/brand", brandRoute);
   app.use("/watch", watchRoute);
   app.use("/livechat", authenticate, livechatRoute);
+  // socketServer();
 
   //=====================================================Throwing Zone
   app.use(notFound);

@@ -6,6 +6,7 @@ const http = require("http");
 //=====================================================local imported Zone
 
 const restApiServer = require("./server/rest");
+const socketServer = require("./server");
 
 //=====================================================Constance Zone
 dotenv.config({ path: "./.env" });
@@ -17,9 +18,12 @@ const server = http.createServer(app);
 //=====================================================Main Functions
 
 restApiServer(app);
+socketServer();
 
 //=====================================================Listening Zone
 console.log(`API DOCS ON:  http://${host}:${port}/docs`);
 server.listen(+port, host, () => {
   console.log(`Server is running at http://${host}:${port}`);
 });
+
+module.exports = server;
