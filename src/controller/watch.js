@@ -15,6 +15,19 @@ module.exports.getAll = async (req, res, next) => {
     return;
 };
 
+module.exports.getBySearch = async (req, res, next) => {
+    try {
+        console.log('query string ==>', req.query);
+        const data = await services.watch.getBySearch(req.query.keyword)
+        res.json({
+            message: 'Get By Search Complete',
+            data
+        })
+    } catch (err) {
+        next(err)
+    }
+}
+
 module.exports.getOne = async (req, res, next) => {
     try {
         const { watchId } = req.params;
