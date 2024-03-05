@@ -35,9 +35,9 @@ module.exports.topUp = async (req, res, next) => {
 module.exports.withdraw = async (req, res, next) => {
   try {
     const { amount } = req.body;
-    const transfer = await omise.transfers.create({ amount: amount * 100 });
-    console.log(transfer);
-    await services.wallet.withdrawWalletByUserId(req.user.id, amount);
+    await omise.transfers.create({ amount: amount * 100 });
+    await services.wallet.withdrawWalletByUserId(req.user.id, +amount);
+    res.status(200).send({ message: "Withdraw Success" });
   } catch (error) {
     res.status(400).send({ message: "Withdraw Failed" });
   }
@@ -48,6 +48,17 @@ module.exports.getWalletByUserId = async (req, res, next) => {
     const wallet = await services.wallet.findWalletByUserId(req.user.id);
     res.status(200).send(wallet);
   } catch (error) {
-    console.log(error);
+    next(error);
+  }
+};
+
+module.exports.getWalletTransactionByUserId = async (req, res, next) => {
+  try {
+    const walletTransaction =
+      await services.wallet.getWalletTransactionByUserId(req.user.id);
+    console.log(walletTransaction);
+    res.status(200).send(walletTransaction);
+  } catch (error) {
+    next(error);
   }
 };

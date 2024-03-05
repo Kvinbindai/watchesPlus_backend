@@ -137,9 +137,3 @@ exports.createTransactionFromSaleToBuy = async (sellerId, body, buyOrder) => {
     return transaction;
   });
 };
-
-exports.createDepositTransaction = async (toWalletId, price) => {
-  return await prisma.transactionWallet.create({
-    data: { toWalletId, price, type: "DEPOSIT" },
-  });
-};
