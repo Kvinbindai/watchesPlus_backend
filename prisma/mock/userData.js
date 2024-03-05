@@ -1,6 +1,6 @@
 
 module.exports.userData = [
-    {
+    { //1
         "firstName" : "admin",
         "lastName" : "admin",
         "email": "admin@gmail.com",
@@ -71,6 +71,18 @@ module.exports.userData = [
         "firstName" : "best",
         "lastName" : "best",
         "email": "best@gmail.com",
+        "password": "123456",
+        "role" : "USER",
+        "wallet" : {
+            "create" : {
+                "amount" : 50000
+            }
+        }
+    },
+    { //8
+        "firstName" : "seller",
+        "lastName" : "seller",
+        "email": "seller@gmail.com",
         "password": "123456",
         "role" : "USER",
         "wallet" : {

@@ -2,9 +2,11 @@ const services =  require('../services')
 
 exports.getAllByUserId = async (req,res,next)=>{
     try{
-
-        // const data = await 
-
+        const data = await services.inventory.myInventory(req.user.id)
+        res.json({
+            message : "My Inventory",
+            data
+        })
 
     }catch(err){
         next(err)

@@ -1,6 +1,32 @@
 const prisma = require("../config/prisma");
 const { CustomError } = require("../config/error");
 
+
+
+module.exports.findMyOrder = async (userId) => {
+  return await prisma.$transaction(async(tx)=>{
+      const myWallet = await tx.wallet.findUnique({
+        where : { userId}
+      })
+      const myBuyOrder = await tx.buyOrder.findMany({
+        where : { 
+          walletId : myWallet.id,
+          status: "PENDING"
+        }
+      })
+      const mySaleOrder = await tx.saleOrder.findMany({
+        where : {
+          status : "PENDING",
+          inventory : {
+            userId : userId,
+            status : "SELLING"
+          }
+        }
+      })
+      return [myBuyOrder,mySaleOrder]
+  })
+}
+
 module.exports.findSaleOrderToMatch = async (watchId, price) => {
   return await prisma.saleOrder.findFirst({
     where: {

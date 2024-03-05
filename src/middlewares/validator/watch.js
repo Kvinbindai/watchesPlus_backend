@@ -38,9 +38,6 @@ const createWatchSchema = Joi.object({
   description: Joi.string().required().trim().messages({
     "any.required": "description is required",
   }),
-  // watchImage : Joi.string().required().trim().messages({
-  //     "any.required": "watchImage is required",
-  // }),
 });
 
 const updateWatchSchema = Joi.object({
@@ -80,9 +77,6 @@ const updateWatchSchema = Joi.object({
   description: Joi.string().optional().trim().messages({
     "any.required": "description is required",
   }),
-  //   watchImage: Joi.string().optional().trim().messages({
-  //     "any.required": "watchImage is required",
-  //   }),
 });
 
 exports.validateCreateWatch = validate(createWatchSchema);
