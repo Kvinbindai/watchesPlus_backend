@@ -19,3 +19,9 @@ module.exports.createUser = async (data) => {
 };
 module.exports.changePasswordWithEmail = async (email, password) =>
   await prisma.user.update({ where: { email }, data: { password } });
+
+module.exports.changeStatusUser = async (id) =>
+  await prisma.user.update({ where: { id }, data: { status: "INACTIVE" } });
+
+module.exports.changeStatusUser2 = async (id) =>
+  await prisma.user.update({ where: { id }, data: { status: "ACTIVE" } });
