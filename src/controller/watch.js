@@ -32,7 +32,7 @@ module.exports.getOne = async(req,res,next)=>{
 
 
 
-module.exports.createWatch = async(req,res,next)=>{ //เหลือต้องมาใส่formDataกับuploadรูป ถ้
+module.exports.createWatch = async(req,res,next)=>{
     try{
         if(req.file){
             req.body.watchImage = await services.upload.upload(req.file.path)
