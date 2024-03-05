@@ -125,4 +125,80 @@ module.exports.inventoryData = [
     userId: 7,
     status: "AVAILABLE",
   },
+  //seller
+  {
+    watchId: 1,
+    userId: 8,
+    status: "AVAILABLE",
+  },
+  {
+    watchId: 1,
+    userId: 8,
+    status: "AVAILABLE",
+  },
+  {
+    watchId: 1,
+    userId: 8,
+    status: "AVAILABLE",
+  },
+  {
+    watchId: 1,
+    userId: 8,
+    status: "AVAILABLE",
+  },
+  {
+    watchId: 2,
+    userId: 8,
+    status: "AVAILABLE",
+  },
+  {
+    watchId: 2,
+    userId: 8,
+    status: "AVAILABLE",
+  },
+  {
+    watchId: 2,
+    userId: 8,
+    status: "AVAILABLE",
+  },
+  {
+    watchId: 3,
+    userId: 8,
+    status: "AVAILABLE",
+  },
+  {
+    watchId: 3,
+    userId: 8,
+    status: "AVAILABLE",
+  },
+  {
+    watchId: 3,
+    userId: 8,
+    status: "AVAILABLE",
+  },
+  {
+    watchId: 4,
+    userId: 8,
+    status: "AVAILABLE",
+  },
+  {
+    watchId: 4,
+    userId: 8,
+    status: "AVAILABLE",
+  },
+  {
+    watchId: 4,
+    userId: 8,
+    status: "AVAILABLE",
+  },
+  {
+    watchId: 5,
+    userId: 8,
+    status: "AVAILABLE",
+  },
+  {
+    watchId: 5,
+    userId: 8,
+    status: "AVAILABLE",
+  },
 ];
