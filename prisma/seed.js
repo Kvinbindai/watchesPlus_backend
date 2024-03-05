@@ -1,35 +1,25 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
-const { productData } = require("./watchData");
-const { brandData } = require("./brandData");
-const { userData } = require("./userData");
-const { inventoryData } = require("./inventoryData");
+const { productData } = require("./mock/watchData");
+const { brandData } = require("./mock/brandData");
+const { userData } = require("./mock/userData");
+const { inventoryData } = require("./mock/inventoryData");
 const utils = require("../src/utils");
 
-// console.log(productData)
-
-const seedUser = async () => {
-  const newData = await Promise.all(
-    userData.map(async (e) => {
-      const hashPassword = await utils.bcrypt.hashed(e.password);
-      return { ...e, password: hashPassword };
-    })
-  );
-  // console.log(newData)
-  await Promise.all(
-    newData.map(async (e) => await prisma.user.create({ data: e }))
-  );
-};
-
 const generateData = async () => {
-  // const user = userData.map(async (e)=> e.password = await utils.bcrypt.hashed(e.password)) //1
-  // console.log(user)
-  const brand = await prisma.brand.createMany({ data: brandData }); //2
-  const product = await prisma.watch.createMany({ data: productData }); //3
-  const inventory = await prisma.inventory.createMany({ data: inventoryData }); //4
-
-  await Promise.all([brand, product, inventory]);
+  return await prisma.$transaction(async (tx) => {
+    for (let i = 0; i < userData.length; i++) {
+      await tx.user.create({
+        data: {
+          ...userData[i],
+          password: await utils.bcrypt.hashed(userData[i].password),
+        },
+      });
+    }
+    await tx.brand.createMany({ data: brandData });
+    await tx.watch.createMany({ data: productData });
+    await tx.inventory.createMany({ data: inventoryData });
+  });
 };
 
-// seedUser();
 generateData();

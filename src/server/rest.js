@@ -15,6 +15,7 @@ const orderRoute = require("../router/order");
 const brandRoute = require("../router/brand");
 const watchRoute = require("../router/watch");
 const inventoryRoute = require("../router/inventory");
+const walletRoute = require("../router/wallet");
 
 //=====================================================Server Zone
 module.exports = function restApiServer(app) {
@@ -39,6 +40,7 @@ module.exports = function restApiServer(app) {
   app.use("/brand", brandRoute);
   app.use("/watch", watchRoute);
   app.use("/inventory", inventoryRoute);
+  app.use("/wallet", walletRoute);
 
   //=====================================================Throwing Zone
   app.use(notFound);
