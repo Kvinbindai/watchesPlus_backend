@@ -7,15 +7,6 @@ var omise = require("omise")({
   omiseVersion: "2019-05-29",
 });
 
-module.exports.getWalletByUserId = async (req, res, next) => {
-  try {
-    const wallet = await services.wallet.findWalletByUserId(req.user.id);
-    res.status(200).send(wallet);
-  } catch (error) {
-    console.log(error);
-  }
-};
-
 module.exports.topUp = async (req, res, next) => {
   try {
     const { token, amount } = req.body;
@@ -33,12 +24,29 @@ module.exports.topUp = async (req, res, next) => {
     });
 
     if (charge.status === "successful") {
-      const data = await services.wallet.updateWalletByUserId(
-        req.user.id,
-        charge.net / 100
-      );
-      console.log("Data --->", data);
+      await services.wallet.topUpWalletByUserId(req.user.id, charge.net / 100);
+      res.status(200).send({ message: "Top-up Success" });
     }
+  } catch (error) {
+    res.status(400).send({ message: "Top-up Failed" });
+  }
+};
+
+module.exports.withdraw = async (req, res, next) => {
+  try {
+    const { amount } = req.body;
+    const transfer = await omise.transfers.create({ amount: amount * 100 });
+    console.log(transfer);
+    await services.wallet.withdrawWalletByUserId(req.user.id, amount);
+  } catch (error) {
+    res.status(400).send({ message: "Withdraw Failed" });
+  }
+};
+
+module.exports.getWalletByUserId = async (req, res, next) => {
+  try {
+    const wallet = await services.wallet.findWalletByUserId(req.user.id);
+    res.status(200).send(wallet);
   } catch (error) {
     console.log(error);
   }
