@@ -100,11 +100,12 @@ model SaleOrder {
 }
 
 model Brand {
-  id        Int      @id @default(autoincrement())
-  name      String   @unique
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-  watch     Watch[]
+  id         Int      @id @default(autoincrement())
+  name       String   @unique
+  brandImage String
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+  watch      Watch[]
 
   @@map("brands")
 }
@@ -262,6 +263,7 @@ enum InventoryStatus {
   SELLING
   FAILED
   SOLD
+  UNAVAILABLE
 }
 
 enum ShippingStatus {
@@ -269,6 +271,7 @@ enum ShippingStatus {
   SUCCESS
   FAILED
   CANCELED
+  ONSHIPPING
 }
 
 enum TransactionType {
