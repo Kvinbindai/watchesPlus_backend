@@ -39,13 +39,21 @@ exports.topUpWalletByUserId = async (userId, amount) => {
     data: { amount: wallet.amount + amount },
   });
 };
+
 exports.withdrawWalletByUserId = async (userId, amount) => {
   const wallet = await this.findWalletByUserId(userId);
   await prisma.transactionWallet.create({
-    data: { toWalletId: wallet.id, price: amount, type: "WITHDRAW" },
+    data: { fromWalletId: wallet.id, price: amount, type: "WITHDRAW" },
   });
   return await prisma.wallet.update({
     where: { id: wallet.id },
     data: { amount: wallet.amount - amount },
+  });
+};
+
+exports.getWalletTransactionByUserId = async (userId) => {
+  const { id } = await this.findWalletByUserId(userId);
+  return await prisma.transactionWallet.findMany({
+    where: { OR: [{ fromWalletId: id }, { toWalletId: id }] },
   });
 };
