@@ -79,5 +79,17 @@ module.exports.userData = [
             }
         }
     },
+    { //8
+        "firstName" : "seller",
+        "lastName" : "seller",
+        "email": "seller@gmail.com",
+        "password": "123456",
+        "role" : "USER",
+        "wallet" : {
+            "create" : {
+                "amount" : 50000
+            }
+        }
+    },
 ]
 
