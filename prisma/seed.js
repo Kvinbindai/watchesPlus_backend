@@ -1,9 +1,9 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
-const { productData } = require("./watchData");
-const { brandData } = require("./brandData");
-const { userData } = require("./userData");
-const { inventoryData } = require("./inventoryData");
+const { productData } = require("./mock/watchData");
+const { brandData } = require("./mock/brandData");
+const { userData } = require("./mock/userData");
+const { inventoryData } = require("./mock/inventoryData");
 const utils = require("../src/utils");
 
 const generateData = async () => {
