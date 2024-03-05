@@ -15,9 +15,9 @@ const orderRoute = require("../router/order");
 const brandRoute = require("../router/brand");
 const watchRoute = require("../router/watch");
 const inventoryRoute = require("../router/inventory");
+const walletRoute = require("../router/wallet");
 const authenticate = require("../middlewares/authenticate");
 const livechatRoute = require("../router/livechat");
-// const socketServer = require("../server");
 
 //=====================================================Server Zone
 module.exports = function restApiServer(app) {
@@ -27,7 +27,7 @@ module.exports = function restApiServer(app) {
   app.use(json());
   app.use(urlencoded({ extended: false }));
   app.use(express.static("public"));
-
+  app.use(clearPhoto); //Delete file in public/images
   //=====================================================Routing Zone
   app.use("/ping", (req, res, next) => {
     try {
@@ -41,8 +41,9 @@ module.exports = function restApiServer(app) {
   app.use("/order", orderRoute);
   app.use("/brand", brandRoute);
   app.use("/watch", watchRoute);
+  app.use("/inventory", inventoryRoute);
+  app.use("/wallet", walletRoute);
   app.use("/livechat", authenticate, livechatRoute);
-  // socketServer();
 
   //=====================================================Throwing Zone
   app.use(notFound);
