@@ -1,45 +1,149 @@
-const prisma = require("../config/prisma")
-const {CustomError} = require('../config/error')
-const services = require(".")
+const prisma = require("../config/prisma");
+const { CustomError } = require("../config/error");
 
 
-module.exports.findSaleOrderToMatch = async (watchId,price)=> await prisma.saleOrder.findFirst({where : {
-    price : body.price,
-    inventory : {
-        watchId : body.watchId
-    }
-}}) 
 
-module.exports.createBuyOrder = async (userId,body) => {
-    const foundWallet = await prisma.wallet.findUnique({where : { userId : userId }})
-    // console.log(foundWallet)
-    if(foundWallet.amount < body.price) throw new CustomError("Your Wallet is not enough")
-
-    // const matchSaleOrder = await prisma.saleOrder.findFirst()
-    // if(matchSaleOrder){ //ถ้า buy ตรงกับ sale
-    //    const updateWalletByBuyerId = await services.wallet.updateBuyerWallet(foundWallet.id,body.price) //1.ตัดเงินคนซื้อ
-    //     const buyOrder = await prisma.buyOrder.create({data :{ //2. สร้าง buy order status success
-    //         ...body,
-    //         status : "SUCCESS"
-    //     }})
-    //     const data = await services.transaction.createTransaction(buyOrder,matchSaleOrder)
-    // }else{
-        
-        const updateBuyerWallet = prisma.wallet.update({
-            where : { id : foundWallet.id },
-            data : {
-                amount :  foundWallet.amount-body.price
-            }
-        })
-        const createOrder = prisma.buyOrder.create({data : body})
-        return await prisma.$transaction([updateBuyerWallet,createOrder])
-    
-    // const data = prisma.buyOrder.create({
-    // data : {
-    //     walletId : foundWallet.id,
-    //     price : 
-    // }
-    // })
+module.exports.findMyOrder = async (userId) => {
+  return await prisma.$transaction(async(tx)=>{
+      const myWallet = await tx.wallet.findUnique({
+        where : { userId}
+      })
+      const myBuyOrder = await tx.buyOrder.findMany({
+        where : { 
+          walletId : myWallet.id,
+          status: "PENDING"
+        }
+      })
+      const mySaleOrder = await tx.saleOrder.findMany({
+        where : {
+          status : "PENDING",
+          inventory : {
+            userId : userId,
+            status : "SELLING"
+          }
+        }
+      })
+      return [myBuyOrder,mySaleOrder]
+  })
 }
 
-module.exports.createSaleOrder = async (body) => await prisma.saleOrder.create({data})
+module.exports.findSaleOrderToMatch = async (watchId, price) => {
+  return await prisma.saleOrder.findFirst({
+    where: {
+      price: price,
+      status: "PENDING",
+      inventory: {
+        watchId: watchId,
+      },
+    },
+    include: {
+      inventory: {
+        //inventory.user.wallet.id //inventory.user.wallet.amount
+        include: {
+          user: {
+            include: {
+              wallet: {
+                select: {
+                  id: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+};
+
+module.exports.findBuyOrderToMatch = async (inventoryId, price) => {
+  return await prisma.$transaction(async (tx) => {
+    const foundInventory = await tx.inventory.findUnique({
+      where: { id: inventoryId },
+    });
+
+    const foundOrder = await tx.buyOrder.findFirst({
+      where: {
+        price,
+        watchId: foundInventory.watchId,
+        status: "PENDING",
+      },
+    });
+    return foundOrder;
+  });
+};
+
+module.exports.createBuyOrder = async (buyerWallet, body) => {
+  return await prisma.$transaction(async(tx)=>{
+    const updateBuyerWallet = await tx.wallet.update({
+      where: { id: buyerWallet.id },
+      data: {
+        amount: {
+          decrement : body.price
+        }
+      },
+    });
+    const createOrder = await tx.buyOrder.create({data : body})
+    return createOrder
+  })
+};
+
+module.exports.createSaleOrder = async (sellerId, inventoryId, price) => {
+  return prisma.$transaction(async (tx) => {
+    //2. update inventory ที่ watchId นั้นให้่เป็น SELLING
+    const updateSellerInventory = await tx.inventory.update({
+      where: {
+        id: inventoryId,
+        userId: sellerId,
+      },
+      data: {
+        status: "SELLING",
+      },
+    });
+    //3. สร้าง saleOrder
+    const createSale = await tx.saleOrder.create({
+      data: {
+        inventoryId: inventoryId,
+        price,
+      },
+    });
+    return createSale
+  });
+};
+
+module.exports.updateBuyOrderToCancel = async (id) => {
+  return await prisma.$transaction(async (tx) => {
+    // 1.update buyorder to cancel
+    const updateBuyerOrder = await tx.buyOrder.update({
+      where: { id: id },
+      data: { status: "CANCELED" },
+    });
+    //2.คืนเงิน wallet
+    const refundWallet = await tx.wallet.update({
+      where: { id: updateBuyerOrder.walletId },
+      data: {
+        amount: {
+          increment: updateBuyerOrder.price,
+        },
+      },
+    });
+    return refundWallet;
+  });
+};
+
+module.exports.updateSaleOrderToCancel = async (id) => {
+  return await prisma.$transaction(async (tx) => {
+    // 1.update saleOrder to cancel
+    const updateSaleOrder = await tx.saleOrder.update({
+      where: { id: id },
+      data: { status: "CANCELED" },
+    });
+    //2.คืนของ inventory
+    const returnItem = await tx.inventory.update({
+      where: { id: updateSaleOrder.inventoryId },
+      data: {
+        status: "AVAILABLE",
+      },
+    });
+    return returnItem;
+  });
+};
