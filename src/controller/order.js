@@ -1,6 +1,20 @@
 const services = require("../services");
 const { CustomError } = require("../config/error");
 
+module.exports.getAllOrder = async (req,res,next) => {
+  try{
+    const data = await services.order.findMyOrder(req.user.id)
+    res.json({
+      message : "My Order",
+      buyOrder : data[0],
+      saleOrder : data[1]
+    })
+  }catch(err){
+    next(err)
+  }
+  return
+}
+
 module.exports.placeBuyOrder = async (req, res, next) => {
   try {
     //check wallet buyer
