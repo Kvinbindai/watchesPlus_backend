@@ -2,10 +2,10 @@ const prisma = require("../config/prisma");
 const { CustomError } = require("../config/error");
 const services = require(".");
 
-exports.findWalletByUserId = async (userId) =>
+module.exports.findWalletByUserId = async (userId) =>
   await prisma.wallet.findUnique({ where: { userId } });
 
-exports.updateBuyerWallet = async (walletId, price) => {
+module.exports.updateBuyerWallet = async (walletId, price) => {
   return await prisma.wallet.update({
     where: { id: walletId },
     data: {
@@ -16,7 +16,7 @@ exports.updateBuyerWallet = async (walletId, price) => {
   });
 };
 
-exports.updateSellerWallet = async (walletId, price) => {
+module.exports.updateSellerWallet = async (walletId, price) => {
   return await prisma.wallet.update({
     where: {
       id: walletId,
@@ -29,7 +29,7 @@ exports.updateSellerWallet = async (walletId, price) => {
   });
 };
 
-exports.topUpWalletByUserId = async (userId, amount) => {
+module.exports.topUpWalletByUserId = async (userId, amount) => {
   const wallet = await this.findWalletByUserId(userId);
   await prisma.transactionWallet.create({
     data: { toWalletId: wallet.id, price: amount, type: "DEPOSIT" },
@@ -40,7 +40,7 @@ exports.topUpWalletByUserId = async (userId, amount) => {
   });
 };
 
-exports.withdrawWalletByUserId = async (userId, amount) => {
+module.exports.withdrawWalletByUserId = async (userId, amount) => {
   const wallet = await this.findWalletByUserId(userId);
   await prisma.transactionWallet.create({
     data: { fromWalletId: wallet.id, price: amount, type: "WITHDRAW" },
@@ -51,7 +51,7 @@ exports.withdrawWalletByUserId = async (userId, amount) => {
   });
 };
 
-exports.getWalletTransactionByUserId = async (userId) => {
+module.exports.getWalletTransactionByUserId = async (userId) => {
   const { id } = await this.findWalletByUserId(userId);
   return await prisma.transactionWallet.findMany({
     where: { OR: [{ fromWalletId: id }, { toWalletId: id }] },

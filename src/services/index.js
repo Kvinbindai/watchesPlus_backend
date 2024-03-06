@@ -7,5 +7,6 @@ const services = {
   inventory: require("./inventory"),
   wallet: require("./wallet"),
   transaction: require("./transaction"),
+  profile: require("./profile"),
 };
 module.exports = services;
