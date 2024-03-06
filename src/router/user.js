@@ -19,7 +19,7 @@ userRoute.post("/login", validateLogin, c.user.login);
 userRoute.patch("/change-password", c.user.changePassword);
 
 userRoute.put("/:id", c.user.update);
-userRoute.delete("/:id", c.user.updateStatusUser); // block User
-userRoute.patch("/:id", c.user.updateStatusUser2); // เปลี่ยนจาก block เป็นเลิก block
+userRoute.delete("/:id", c.user.changeStatusUserBlock); // block User
+userRoute.patch("/:id", c.user.changeStatusUserUnblock); // เปลี่ยนจาก block เป็นเลิก block
 
 module.exports = userRoute;

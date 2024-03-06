@@ -14,6 +14,7 @@ module.exports.getAll = async (req, res, next) => {
   }
   return;
 };
+
 module.exports.get = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -95,11 +96,11 @@ module.exports.update = async (req, res, next) => {
   return;
 };
 
-module.exports.updateStatusUser = async (req, res, next) => {
+module.exports.changeStatusUserBlock = async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    const users = await services.user.changeStatusUser(+id);
+    const users = await services.user.changeStatusUserBlock(+id);
 
     res.status(200).json({ users });
   } catch (err) {
@@ -108,11 +109,11 @@ module.exports.updateStatusUser = async (req, res, next) => {
   return;
 };
 
-module.exports.updateStatusUser2 = async (req, res, next) => {
+module.exports.changeStatusUserUnblock = async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    const users = await services.user.changeStatusUser2(+id);
+    const users = await services.user.changeStatusUserUnblock(+id);
 
     res.status(200).json({ users });
   } catch (err) {

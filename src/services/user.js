@@ -3,7 +3,8 @@ const { CustomError } = require("../config/error");
 
 module.exports.findUserByEmail = async (email) =>
   await prisma.user.findUnique({ where: { email } });
-module.exports.getAll = async () => await prisma.user.findMany();
+module.exports.getAll = async () =>
+  await prisma.user.findMany({ where: { role: "USER" } });
 module.exports.createUser = async (data) => {
   const foundUser = await this.findUserByEmail(data.email);
   if (foundUser)
@@ -20,8 +21,8 @@ module.exports.createUser = async (data) => {
 module.exports.changePasswordWithEmail = async (email, password) =>
   await prisma.user.update({ where: { email }, data: { password } });
 
-module.exports.changeStatusUser = async (id) =>
+module.exports.changeStatusUserBlock = async (id) =>
   await prisma.user.update({ where: { id }, data: { status: "INACTIVE" } });
 
-module.exports.changeStatusUser2 = async (id) =>
+module.exports.changeStatusUserUnblock = async (id) =>
   await prisma.user.update({ where: { id }, data: { status: "ACTIVE" } });
