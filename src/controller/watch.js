@@ -18,7 +18,8 @@ module.exports.getAll = async (req, res, next) => {
 module.exports.getOne = async (req, res, next) => {
   try {
     const { watchId } = req.params;
-    const data = await services.watch.getOneWatch(watchId);
+    const data = await services.watch.getWatchById(+watchId);
+    data.brand = data.brand.name
     res.json({
       message: "Get One Watch Complete",
       data,
