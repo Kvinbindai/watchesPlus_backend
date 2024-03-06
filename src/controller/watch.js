@@ -17,8 +17,14 @@ module.exports.getAll = async (req, res, next) => {
 
 module.exports.getBySearch = async (req, res, next) => {
     try {
-        console.log('query string ==>', req.query);
         const data = await services.watch.getBySearch(req.query.keyword)
+        if (data.length === 0) {
+            const response = await services.watch.getBySearchEnter(req.query.keyword)
+            return res.json({
+                message: 'Get By Search Enter Complete',
+                data: response
+            })
+        }
         res.json({
             message: 'Get By Search Complete',
             data
