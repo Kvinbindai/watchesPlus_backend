@@ -10,6 +10,7 @@ const upload = require("../middlewares/upload");
 const watchRoute = express.Router();
 
 watchRoute.get("/", c.watch.getAll);
+watchRoute.get("/search", c.watch.getBySearch)
 watchRoute.get("/:watchId", c.watch.getOne);
 watchRoute.post(
   "/",
