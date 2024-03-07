@@ -39,28 +39,78 @@ module.exports.findOrderExpectMyIdOnWatchId = async (userId,watchId) => {
 }
 
 module.exports.findMyOrder = async (userId) => {
-  return await prisma.$transaction(async(tx)=>{
-      const myWallet = await tx.wallet.findUnique({
-        where : { userId}
-      })
-      const myBuyOrder = await tx.buyOrder.findMany({
-        where : { 
-          walletId : myWallet.id,
-          status: "PENDING"
-        }
-      })
-      const mySaleOrder = await tx.saleOrder.findMany({
-        where : {
-          status : "PENDING",
-          inventory : {
-            userId : userId,
-            status : "SELLING"
-          }
-        }
-      })
-      return [myBuyOrder,mySaleOrder]
-  })
-}
+  return await prisma.$transaction(async (tx) => {
+    const myWallet = await tx.wallet.findUnique({
+      where: { userId },
+    });
+    const myBuyOrder = await tx.buyOrder.findMany({
+      where: {
+        walletId: myWallet.id,
+        status: "PENDING",
+      },
+    });
+    const mySaleOrder = await tx.saleOrder.findMany({
+      where: {
+        status: "PENDING",
+        inventory: {
+          userId: userId,
+          status: "SELLING",
+        },
+      },
+    });
+    return [myBuyOrder, mySaleOrder];
+  });
+};
+
+module.exports.findMyAllOrder = async (userId) => {
+  const activity = await prisma.$transaction(async (tx) => {
+    const myWallet = await tx.wallet.findUnique({
+      where: { userId },
+    });
+    const myBuyOrder = await tx.buyOrder.findMany({
+      where: {
+        walletId: myWallet.id,
+        status: "PENDING",
+      },
+      include: { watch: true },
+    });
+    const mySaleOrder = await tx.saleOrder.findMany({
+      where: {
+        status: "PENDING",
+        inventory: {
+          userId: userId,
+          status: "SELLING",
+        },
+      },
+      include: { inventory: { include: { watch: true } } },
+    });
+    return { myBuyOrder, mySaleOrder };
+  });
+  const history = await prisma.$transaction(async (tx) => {
+    const myWallet = await tx.wallet.findUnique({
+      where: { userId },
+    });
+    const myBuyHistory = await tx.buyOrder.findMany({
+      where: {
+        walletId: myWallet.id,
+        OR: [{ status: "CANCELED" }, { status: "SUCCESS" }],
+      },
+      include: { watch: true },
+    });
+    const mySaleHistory = await tx.saleOrder.findMany({
+      where: {
+        OR: [{ status: "CANCELED" }, { status: "SUCCESS" }],
+        inventory: {
+          userId: userId,
+          OR: [{ status: "AVAILABLE" }, { status: "SOLD" }],
+        },
+      },
+      include: { inventory: { include: { watch: true } } },
+    });
+    return { myBuyHistory, mySaleHistory };
+  });
+  return { activity, history };
+};
 
 module.exports.findSaleOrderToMatch = async (watchId, price,buyerId) => {
   return prisma.$transaction(async(tx)=>{
@@ -114,18 +164,18 @@ module.exports.findBuyOrderToMatch = async (inventoryId, price) => {
 };
 
 module.exports.createBuyOrder = async (buyerWallet, body) => {
-  return await prisma.$transaction(async(tx)=>{
+  return await prisma.$transaction(async (tx) => {
     const updateBuyerWallet = await tx.wallet.update({
       where: { id: buyerWallet.id },
       data: {
         amount: {
-          decrement : body.price
-        }
+          decrement: body.price,
+        },
       },
     });
-    const createOrder = await tx.buyOrder.create({data : body})
-    return createOrder
-  })
+    const createOrder = await tx.buyOrder.create({ data: body });
+    return createOrder;
+  });
 };
 
 module.exports.createSaleOrder = async (sellerId, inventoryId, price) => {
@@ -147,7 +197,7 @@ module.exports.createSaleOrder = async (sellerId, inventoryId, price) => {
         price,
       },
     });
-    return createSale
+    return createSale;
   });
 };
 
