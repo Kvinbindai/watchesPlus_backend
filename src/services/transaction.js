@@ -19,6 +19,7 @@ exports.createTransactionFromBuyToSale = async (buyerId, body, saleOrder) => {
         walletId: body.walletId,
         watchId: body.watchId,
         price: body.price,
+        status : "SUCCESS"
       },
     });
     //3. อัพเดท saleOrder ที่เจอให้ Success และ อัพเดท inventoryId นั้นให้เป็น SOLD
@@ -135,11 +136,5 @@ exports.createTransactionFromSaleToBuy = async (sellerId, body, buyOrder) => {
       },
     });
     return transaction;
-  });
-};
-
-exports.createDepositTransaction = async (toWalletId, price) => {
-  return await prisma.transactionWallet.create({
-    data: { toWalletId, price, type: "DEPOSIT" },
   });
 };
