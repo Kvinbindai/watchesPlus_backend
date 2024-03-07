@@ -1,7 +1,42 @@
 const prisma = require("../config/prisma");
 const { CustomError } = require("../config/error");
 
-
+module.exports.findOrderExpectMyIdOnWatchId = async (userId,watchId) => {
+  return await prisma.$transaction(async (tx) => {
+    const myWallet = await tx.wallet.findUnique({
+      where : { userId }
+    })
+    const foundAllBuyOrder = await tx.buyOrder.findMany({
+      where : { 
+        watchId : watchId,
+        status : "PENDING",
+        NOT :{
+          walletId : myWallet.id
+        }
+       },
+       orderBy : {
+        price : 'asc'
+       }
+    })
+    const foundAllSaleOrder = await tx.saleOrder.findMany({
+      where : { 
+        inventory : {
+          watchId : watchId ,
+          status : "SELLING"
+        },
+        NOT :{
+          inventory :{
+            userId : userId
+          }
+        }
+       },
+       orderBy : {
+        price : 'asc'
+       }
+    })
+    return [foundAllBuyOrder,foundAllSaleOrder]
+  })
+}
 
 module.exports.findMyOrder = async (userId) => {
   return await prisma.$transaction(async(tx)=>{
@@ -27,32 +62,38 @@ module.exports.findMyOrder = async (userId) => {
   })
 }
 
-module.exports.findSaleOrderToMatch = async (watchId, price) => {
-  return await prisma.saleOrder.findFirst({
-    where: {
-      price: price,
-      status: "PENDING",
-      inventory: {
-        watchId: watchId,
+module.exports.findSaleOrderToMatch = async (watchId, price,buyerId) => {
+  return prisma.$transaction(async(tx)=>{
+    const foundSaleOrder = await tx.saleOrder.findFirst({
+      where: {
+        price: price,
+        status: "PENDING",
+        inventory: {
+          watchId: watchId,
+        },
       },
-    },
-    include: {
-      inventory: {
-        //inventory.user.wallet.id //inventory.user.wallet.amount
-        include: {
-          user: {
-            include: {
-              wallet: {
-                select: {
-                  id: true,
+      include: {
+        inventory: {
+          //inventory.user.wallet.id //inventory.user.wallet.amount
+          include: {
+            user: {
+              include: {
+                wallet: {
+                  select: {
+                    id: true,
+                  },
                 },
               },
             },
           },
         },
       },
-    },
-  });
+    });
+    if(buyerId === foundSaleOrder.inventory.userId){ //ห้ามซื้อ saleOrder ตัวเอง
+      throw new CustomError("Cant Buy This Order","WRONG_ID",400)
+    }
+    return foundSaleOrder
+  })
 };
 
 module.exports.findBuyOrderToMatch = async (inventoryId, price) => {

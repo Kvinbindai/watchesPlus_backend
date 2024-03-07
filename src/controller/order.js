@@ -1,19 +1,34 @@
 const services = require("../services");
 const { CustomError } = require("../config/error");
 
-module.exports.getAllOrder = async (req,res,next) => {
-  try{
-    const data = await services.order.findMyOrder(req.user.id)
+module.exports.getAllOrder = async (req, res, next) => {
+  try {
+    const data = await services.order.findMyOrder(req.user.id);
     res.json({
-      message : "My Order",
-      buyOrder : data[0],
-      saleOrder : data[1]
-    })
-  }catch(err){
-    next(err)
+      message: "My Order",
+      buyOrder: data[0],
+      saleOrder: data[1],
+    });
+  } catch (err) {
+    next(err);
   }
-  return
-}
+  return;
+};
+
+module.exports.findOrderToShowOnWatchId = async (req, res, next) => {
+  try {
+    const { watchId } = req.params;
+    const data = await services.order.findOrderExpectMyIdOnWatchId(req.user.id, +watchId);
+    res.json({
+      message : "All Order On Market",
+      AllBuyOrder : data[0],
+      AllSaleOrder : data[1],
+    })
+  } catch (err) {
+    next(err);
+  }
+  return;
+};
 
 module.exports.placeBuyOrder = async (req, res, next) => {
   try {
@@ -23,8 +38,14 @@ module.exports.placeBuyOrder = async (req, res, next) => {
     );
     const matchSaleOrder = await services.order.findSaleOrderToMatch(
       req.body.watchId,
-      req.body.price
+      req.body.price,
+      req.user.id
     );
+    if (matchSaleOrder.inventory.userId === req.user.id) {
+      return res.status(400).json({
+        message: "Cant Buy",
+      });
+    }
     if (checkWalletFromBuyer.amount < req.body.price) {
       return res.status(400).json({
         message: "Your Wallet is not enough",
@@ -101,32 +122,32 @@ module.exports.placeSaleOrder = async (req, res, next) => {
   return;
 };
 
-module.exports.cancelBuyOrder = async (req,res,next) => {
-  try{
-    const { buyOrderId } = req.params
-    const data = await services.order.updateBuyOrderToCancel(+buyOrderId)
+module.exports.cancelBuyOrder = async (req, res, next) => {
+  try {
+    const { buyOrderId } = req.params;
+    const data = await services.order.updateBuyOrderToCancel(+buyOrderId);
     res.json({
-      message : "Cancel BuyOrder and Refund Success",
-      data
-    })
-  }catch(err){
-    console.log(err)
-    next(err)
+      message: "Cancel BuyOrder and Refund Success",
+      data,
+    });
+  } catch (err) {
+    console.log(err);
+    next(err);
   }
-  return
-}
+  return;
+};
 
-module.exports.cancelSaleOrder = async (req,res,next) => {
-  try{
-    const { saleOrderId } = req.params
-    const data = await services.order.updateSaleOrderToCancel(+saleOrderId)
+module.exports.cancelSaleOrder = async (req, res, next) => {
+  try {
+    const { saleOrderId } = req.params;
+    const data = await services.order.updateSaleOrderToCancel(+saleOrderId);
     res.json({
-      message : "Cancel saleOrder and Refund Inventory",
-      data
-    })
-  }catch(err){
-    console.log(err)
-    next(err)
+      message: "Cancel saleOrder and Refund Inventory",
+      data,
+    });
+  } catch (err) {
+    console.log(err);
+    next(err);
   }
-  return
-}
+  return;
+};
