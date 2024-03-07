@@ -15,6 +15,15 @@ module.exports.getAllOrder = async (req, res, next) => {
   return;
 };
 
+module.exports.getAllActivityAndHistory = async (req, res, next) => {
+  try {
+    const data = await services.order.findMyAllOrder(req.user.id);
+    res.status(200).send(data);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports.findOrderToShowOnWatchId = async (req, res, next) => {
   try {
     const { watchId } = req.params;
