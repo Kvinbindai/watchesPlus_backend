@@ -18,6 +18,7 @@ const inventoryRoute = require("../router/inventory");
 const walletRoute = require("../router/wallet");
 const authenticate = require("../middlewares/authenticate");
 const livechatRoute = require("../router/livechat");
+const profileRoute = require("../router/profile");
 
 //=====================================================Server Zone
 module.exports = function restApiServer(app) {
@@ -44,6 +45,7 @@ module.exports = function restApiServer(app) {
   app.use("/inventory", inventoryRoute);
   app.use("/wallet", walletRoute);
   app.use("/livechat", authenticate, livechatRoute);
+  app.use("/profile", profileRoute);
 
   //=====================================================Throwing Zone
   app.use(notFound);
