@@ -5,6 +5,8 @@ const { brandData } = require("./mock/brandData");
 const { userData } = require("./mock/userData");
 const { inventoryData } = require("./mock/inventoryData");
 const { chatRoomData } = require("./mock/chatRoom");
+const { buyOrderData } = require("./mock/buyOrderData");
+const { saleOrderData } = require("./mock/saleOrderData");
 const utils = require("../src/utils");
 
 const generateData = async () => {
@@ -21,7 +23,12 @@ const generateData = async () => {
     await tx.watch.createMany({ data: productData });
     await tx.inventory.createMany({ data: inventoryData });
     await tx.chatRoom.createMany({ data: chatRoomData });
+    await tx.buyOrder.createMany({ data: buyOrderData });
+    for(let i = 0;i<saleOrderData.length;i++ ){
+      await tx.saleOrder.create({data : saleOrderData[i]})
+    }
   });
 };
 
 generateData();
+// generateBuyOrder();

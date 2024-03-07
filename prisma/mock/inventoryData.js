@@ -126,45 +126,46 @@ module.exports.inventoryData = [
     status: "AVAILABLE",
   },
   //seller
-  {
+  { //inventoryId = 25
     watchId: 1,
     userId: 8,
-    status: "AVAILABLE",
+    status: "SELLING",
   },
-  {
+  { //inventoryId = 26
     watchId: 1,
     userId: 8,
-    status: "AVAILABLE",
+    status: "SELLING",
   },
-  {
+  { //inventoryId = 27
     watchId: 1,
     userId: 8,
-    status: "AVAILABLE",
+    status: "SELLING",
   },
-  {
+  { //inventoryId = 28
     watchId: 1,
     userId: 8,
-    status: "AVAILABLE",
+    status: "SELLING",
   },
-  {
+  { //inventoryId = 29
     watchId: 2,
     userId: 8,
-    status: "AVAILABLE",
+    status: "SELLING",
   },
   {
+    //inventoryId = 30
     watchId: 2,
     userId: 8,
-    status: "AVAILABLE",
+    status: "SELLING",
   },
-  {
+  { //inventoryId = 31
     watchId: 2,
     userId: 8,
-    status: "AVAILABLE",
+    status: "SELLING",
   },
-  {
+  { //inventoryId = 32
     watchId: 3,
     userId: 8,
-    status: "AVAILABLE",
+    status: "SELLING",
   },
   {
     watchId: 3,
@@ -188,11 +189,6 @@ module.exports.inventoryData = [
   },
   {
     watchId: 4,
-    userId: 8,
-    status: "AVAILABLE",
-  },
-  {
-    watchId: 5,
     userId: 8,
     status: "AVAILABLE",
   },
