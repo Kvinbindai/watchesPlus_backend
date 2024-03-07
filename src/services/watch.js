@@ -6,7 +6,8 @@ module.exports.getWatchById = async (watchId) =>
   await prisma.watch.findFirst({ where: { id: watchId } , include : {
     brand : {
       select :{
-        name : true
+        name : true,
+        brandImage: true
       }
     }
   } });
