@@ -1,58 +1,149 @@
 const prisma = require("../config/prisma");
 const { CustomError } = require("../config/error");
 
-
-
-module.exports.findMyOrder = async (userId) => {
-  return await prisma.$transaction(async(tx)=>{
-      const myWallet = await tx.wallet.findUnique({
-        where : { userId}
-      })
-      const myBuyOrder = await tx.buyOrder.findMany({
-        where : { 
-          walletId : myWallet.id,
-          status: "PENDING"
+module.exports.findOrderExpectMyIdOnWatchId = async (userId, watchId) => {
+  return await prisma.$transaction(async (tx) => {
+    const myWallet = await tx.wallet.findUnique({
+      where: { userId }
+    })
+    const foundAllBuyOrder = await tx.buyOrder.findMany({
+      where: {
+        watchId: watchId,
+        status: "PENDING",
+        NOT: {
+          walletId: myWallet.id
         }
-      })
-      const mySaleOrder = await tx.saleOrder.findMany({
-        where : {
-          status : "PENDING",
-          inventory : {
-            userId : userId,
-            status : "SELLING"
+      },
+      orderBy: {
+        price: 'asc'
+      }
+    })
+    const foundAllSaleOrder = await tx.saleOrder.findMany({
+      where: {
+        inventory: {
+          watchId: watchId,
+          status: "SELLING"
+        },
+        NOT: {
+          inventory: {
+            userId: userId
           }
         }
-      })
-      return [myBuyOrder,mySaleOrder]
+      },
+      orderBy: {
+        price: 'asc'
+      }
+    })
+    return [foundAllBuyOrder, foundAllSaleOrder]
   })
 }
 
-module.exports.findSaleOrderToMatch = async (watchId, price) => {
-  return await prisma.saleOrder.findFirst({
-    where: {
-      price: price,
-      status: "PENDING",
-      inventory: {
-        watchId: watchId,
+module.exports.findMyOrder = async (userId) => {
+  return await prisma.$transaction(async (tx) => {
+    const myWallet = await tx.wallet.findUnique({
+      where: { userId },
+    });
+    const myBuyOrder = await tx.buyOrder.findMany({
+      where: {
+        walletId: myWallet.id,
+        status: "PENDING",
       },
-    },
-    include: {
-      inventory: {
-        //inventory.user.wallet.id //inventory.user.wallet.amount
-        include: {
-          user: {
-            include: {
-              wallet: {
-                select: {
-                  id: true,
+    });
+    const mySaleOrder = await tx.saleOrder.findMany({
+      where: {
+        status: "PENDING",
+        inventory: {
+          userId: userId,
+          status: "SELLING",
+        },
+      },
+    });
+    return [myBuyOrder, mySaleOrder];
+  });
+};
+
+module.exports.findMyAllOrder = async (userId) => {
+  const activity = await prisma.$transaction(async (tx) => {
+    const myWallet = await tx.wallet.findUnique({
+      where: { userId },
+    });
+    const myBuyOrder = await tx.buyOrder.findMany({
+      where: {
+        walletId: myWallet.id,
+        status: "PENDING",
+      },
+      include: { watch: { include: { brand: { select: { name: true } } } } },
+    });
+    const mySaleOrder = await tx.saleOrder.findMany({
+      where: {
+        status: "PENDING",
+        inventory: {
+          userId: userId,
+          status: "SELLING",
+        },
+      },
+      include: { inventory: { include: { watch: { include: { brand: { select: { name: true } } } } } } },
+    });
+    return { myBuyOrder, mySaleOrder };
+  });
+  const history = await prisma.$transaction(async (tx) => {
+    const myWallet = await tx.wallet.findUnique({
+      where: { userId },
+    });
+    const myBuyHistory = await tx.buyOrder.findMany({
+      where: {
+        walletId: myWallet.id,
+        OR: [{ status: "CANCELED" }, { status: "SUCCESS" }],
+      },
+      include: { watch: true },
+    });
+    const mySaleHistory = await tx.saleOrder.findMany({
+      where: {
+        OR: [{ status: "CANCELED" }, { status: "SUCCESS" }],
+        inventory: {
+          userId: userId,
+          OR: [{ status: "AVAILABLE" }, { status: "SOLD" }],
+        },
+      },
+      include: { inventory: { include: { watch: true } } },
+    });
+    return { myBuyHistory, mySaleHistory };
+  });
+  return { activity, history };
+};
+
+module.exports.findSaleOrderToMatch = async (watchId, price, buyerId) => {
+  return prisma.$transaction(async (tx) => {
+    const foundSaleOrder = await tx.saleOrder.findFirst({
+      where: {
+        price: price,
+        status: "PENDING",
+        inventory: {
+          watchId: watchId,
+        },
+      },
+      include: {
+        inventory: {
+          //inventory.user.wallet.id //inventory.user.wallet.amount
+          include: {
+            user: {
+              include: {
+                wallet: {
+                  select: {
+                    id: true,
+                  },
                 },
               },
             },
           },
         },
       },
-    },
-  });
+    });
+    if (buyerId === foundSaleOrder.inventory.userId) { //ห้ามซื้อ saleOrder ตัวเอง
+      throw new CustomError("Cant Buy This Order", "WRONG_ID", 400)
+    }
+    return foundSaleOrder
+  })
 };
 
 module.exports.findBuyOrderToMatch = async (inventoryId, price) => {
@@ -73,18 +164,18 @@ module.exports.findBuyOrderToMatch = async (inventoryId, price) => {
 };
 
 module.exports.createBuyOrder = async (buyerWallet, body) => {
-  return await prisma.$transaction(async(tx)=>{
+  return await prisma.$transaction(async (tx) => {
     const updateBuyerWallet = await tx.wallet.update({
       where: { id: buyerWallet.id },
       data: {
         amount: {
-          decrement : body.price
-        }
+          decrement: body.price,
+        },
       },
     });
-    const createOrder = await tx.buyOrder.create({data : body})
-    return createOrder
-  })
+    const createOrder = await tx.buyOrder.create({ data: body });
+    return createOrder;
+  });
 };
 
 module.exports.createSaleOrder = async (sellerId, inventoryId, price) => {
@@ -106,7 +197,7 @@ module.exports.createSaleOrder = async (sellerId, inventoryId, price) => {
         price,
       },
     });
-    return createSale
+    return createSale;
   });
 };
 
