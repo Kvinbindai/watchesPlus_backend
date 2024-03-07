@@ -10,21 +10,22 @@ const upload = require("../middlewares/upload");
 const watchRoute = express.Router();
 
 watchRoute.get("/", c.watch.getAll);
+watchRoute.get("/search", c.watch.getBySearch)
 watchRoute.get("/:watchId", c.watch.getOne);
 watchRoute.post(
   "/",
   authenticate,
   authenticateAdmin,
+  upload.single("watchImage"), //upload watchImage into public/images
   validateCreateWatch,
-  upload.single('watchImage'), //upload watchImage into public/images
   c.watch.createWatch
 );
 watchRoute.patch(
   "/:watchId",
   authenticate,
   authenticateAdmin,
+  upload.single("watchImage"),
   validateUpdateWatch,
-  upload.single('watchImage'),
   c.watch.editWatch
 );
 watchRoute.delete(
