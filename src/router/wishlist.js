@@ -2,7 +2,7 @@ const {Router} = require('express')
 
 const wishlistRoute = Router()
 
-const wishlistController = require("../controller/wishlist-controller")
+const c = require("../controller")
 
 const authenticate = require("../../src/middlewares/authenticate")
 // const { Router } = require("express")
@@ -11,7 +11,7 @@ const authenticate = require("../../src/middlewares/authenticate")
 // wishlistRoute.delete("/wishlist/delete/:id", wishlistController.deleteWishlist)
 
 
-wishlistRoute.post("/:watchId" , authenticate, wishlistController.addWatch)
-wishlistRoute.delete("/:watchId" , authenticate, wishlistController.deleteWatch)
+wishlistRoute.post("/:watchId" , authenticate, c.wishlist.addWatchToWishlist)
+wishlistRoute.delete("/:watchId" , authenticate, c.wishlist.deleteWatchFromWishlist)
 
 module.exports = wishlistRoute

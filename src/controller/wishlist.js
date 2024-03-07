@@ -1,5 +1,5 @@
 const catchError = require("../utils/catch-error");
-const wishlistService = require("../services/wishlist-service");
+const services = require("../services");
 
 // exports.getAllWishlists = catchError(async (req, res, next) => {
 //     const wishlist = await wishlistService.findWishlish()
@@ -16,13 +16,13 @@ const wishlistService = require("../services/wishlist-service");
 //     })
 // })
 
-exports.addWatch = catchError(async (req, res, next) => {
+exports.addWatchToWishlist = catchError(async (req, res, next) => {
   const userId = req.user.id; // คาดว่า req.user จะมีข้อมูลของผู้ใช้ที่ได้รับจาก middleware authenticate
 
   const watchId = +req.params.watchId;
-  const watch = await wishlistService.findLike(userId, watchId)
+  const watch = await services.wishlist.findLike(userId, watchId)
   if(!watch){
-    const addWatch = await wishlistService.addWatch(userId, watchId);
+    const addWatch = await services.wishlist.addWatch(userId, watchId);
 
   res.status(200).json({
     success: true,
@@ -39,14 +39,14 @@ exports.addWatch = catchError(async (req, res, next) => {
   
 });
 
-exports.deleteWatch = catchError(async (req, res, next) => {
+exports.deleteWatchFromWishlist = catchError(async (req, res, next) => {
   const userId = +req.user.id; // คาดว่า req.user จะมีข้อมูลของผู้ใช้ที่ได้รับจาก middleware authenticate
 
   const watchId = +req.params.watchId;
-  const watch = await wishlistService.findLike(userId, watchId)
+  const watch = await services.wishlist.findLike(userId, watchId)
   console.log(watch)
   if(watch){
-    const deleteWatch = await wishlistService.deleteWatch(watch.id);
+    const deleteWatch = await services.wishlist.deleteWatch(watch.id);
     res.status(200).json({
       success: true,
       message: "Watch Deleted",
