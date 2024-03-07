@@ -5,5 +5,6 @@ const controller = {
   watch: require("./watch"),
   inventory: require("./inventory"),
   wallet: require("./wallet"),
+  profile: require("./profile"),
 };
 module.exports = controller;
