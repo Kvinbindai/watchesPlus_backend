@@ -24,6 +24,21 @@ module.exports.getAllActivityAndHistory = async (req, res, next) => {
   }
 };
 
+module.exports.findOrderToShowOnWatchId = async (req, res, next) => {
+  try {
+    const { watchId } = req.params;
+    const data = await services.order.findOrderExpectMyIdOnWatchId(req.user.id, +watchId);
+    res.json({
+      message : "All Order On Market",
+      AllBuyOrder : data[0],
+      AllSaleOrder : data[1],
+    })
+  } catch (err) {
+    next(err);
+  }
+  return;
+};
+
 module.exports.placeBuyOrder = async (req, res, next) => {
   try {
     //check wallet buyer
@@ -32,8 +47,14 @@ module.exports.placeBuyOrder = async (req, res, next) => {
     );
     const matchSaleOrder = await services.order.findSaleOrderToMatch(
       req.body.watchId,
-      req.body.price
+      req.body.price,
+      req.user.id
     );
+    if (matchSaleOrder.inventory.userId === req.user.id) {
+      return res.status(400).json({
+        message: "Cant Buy",
+      });
+    }
     if (checkWalletFromBuyer.amount < req.body.price) {
       return res.status(400).json({
         message: "Your Wallet is not enough",

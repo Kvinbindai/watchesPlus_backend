@@ -74,7 +74,7 @@ model Wallet {
 
 model BuyOrder {
   id                Int                @id @default(autoincrement())
-  watchId           Int                @unique @map("watch_id")
+  watchId           Int                @map("watch_id")
   walletId          Int                @map("wallet_id")
   createdAt         DateTime           @default(now()) @map("created_at")
   status            OrderStatus        @default(PENDING)
@@ -100,11 +100,12 @@ model SaleOrder {
 }
 
 model Brand {
-  id        Int      @id @default(autoincrement())
-  name      String   @unique
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-  watch     Watch[]
+  id         Int      @id @default(autoincrement())
+  name       String   @unique
+  brandImage String
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+  watch      Watch[]
 
   @@map("brands")
 }
@@ -126,7 +127,7 @@ model Watch {
   watchImage        String              @map("watch_image")
   createdAt         DateTime            @default(now()) @map("created_at")
   updatedAt         DateTime            @updatedAt @map("updated_at")
-  buyOrder          BuyOrder?
+  buyOrder          BuyOrder[]
   inventory         Inventory[]
   TransactionWallet TransactionWallet[]
   brand             Brand               @relation(fields: [brandId], references: [id])
@@ -262,6 +263,7 @@ enum InventoryStatus {
   SELLING
   FAILED
   SOLD
+  UNAVAILABLE
 }
 
 enum ShippingStatus {
@@ -269,6 +271,7 @@ enum ShippingStatus {
   SUCCESS
   FAILED
   CANCELED
+  ONSHIPPING
 }
 
 enum TransactionType {
