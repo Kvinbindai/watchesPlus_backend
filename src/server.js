@@ -27,15 +27,26 @@ module.exports = function socketServer() {
   const onlineUser = {};
 
   io.use((socket, next) => {
-    const userId = socket.handshake.auth.id;
-    onlineUser[userId] = socket.id;
+    const authUser = socket.handshake.auth.senderId;
+    onlineUser[authUser] = socket.id;
+    console.log(authUser, "authUser");
     next();
   });
 
   io.on("connection", (socket) => {
     console.log("Client is connected");
-    socket.on("message", (msg) => {
-      io.emit("received", msg);
+    // socket.on("message", (msg) => {
+    //   io.emit("received", msg);
+    // });
+
+    socket.on("message", (data) => {
+      const { receiverId, msg } = data;
+      console.log(data, "---------------");
+      console.log(onlineUser);
+      io.to([
+        onlineUser[socket.handshake.auth.senderId],
+        onlineUser[receiverId],
+      ]).emit("message", { receiverId: receiverId, msg });
     });
 
     socket.on("disconnect", () => {
