@@ -26,18 +26,18 @@ module.exports.findMyOrder = async (userId) => {
 };
 
 module.exports.findMyAllOrder = async (userId) => {
-  const activity = await prisma.$transaction(async () => {
-    const myWallet = await prisma.wallet.findUnique({
+  const activity = await prisma.$transaction(async (tx) => {
+    const myWallet = await tx.wallet.findUnique({
       where: { userId },
     });
-    const myBuyOrder = await prisma.buyOrder.findMany({
+    const myBuyOrder = await tx.buyOrder.findMany({
       where: {
         walletId: myWallet.id,
         status: "PENDING",
       },
       include: { watch: true },
     });
-    const mySaleOrder = await prisma.saleOrder.findMany({
+    const mySaleOrder = await tx.saleOrder.findMany({
       where: {
         status: "PENDING",
         inventory: {
@@ -49,18 +49,18 @@ module.exports.findMyAllOrder = async (userId) => {
     });
     return { myBuyOrder, mySaleOrder };
   });
-  const history = await prisma.$transaction(async () => {
-    const myWallet = await prisma.wallet.findUnique({
+  const history = await prisma.$transaction(async (tx) => {
+    const myWallet = await tx.wallet.findUnique({
       where: { userId },
     });
-    const myBuyHistory = await prisma.buyOrder.findMany({
+    const myBuyHistory = await tx.buyOrder.findMany({
       where: {
         walletId: myWallet.id,
         OR: [{ status: "CANCELED" }, { status: "SUCCESS" }],
       },
       include: { watch: true },
     });
-    const mySaleHistory = await prisma.saleOrder.findMany({
+    const mySaleHistory = await tx.saleOrder.findMany({
       where: {
         OR: [{ status: "CANCELED" }, { status: "SUCCESS" }],
         inventory: {
