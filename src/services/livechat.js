@@ -25,3 +25,14 @@ exports.getConversationService = (chatRoomId, senderId) =>
     where: { chatRoomId },
     include: { receiver: true, sender: true },
   });
+
+exports.getUserByIdService = (id) =>
+  prisma.user.findFirst({
+    where: id,
+  });
+
+exports.getChatRoomService = (userId) =>
+  prisma.chatRoom.findFirst({
+    where: { userId },
+    include: { sender: true, receiver: true },
+  });
