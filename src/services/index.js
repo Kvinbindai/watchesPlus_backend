@@ -8,5 +8,6 @@ const services = {
   wallet: require("./wallet"),
   transaction: require("./transaction"),
   profile: require("./profile"),
+  shipping: require("./shipping"),
 };
 module.exports = services;
