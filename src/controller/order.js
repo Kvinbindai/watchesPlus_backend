@@ -42,6 +42,7 @@ module.exports.findOrderToShowOnWatchId = async (req, res, next) => {
 module.exports.placeBuyOrder = async (req, res, next) => {
   try {
     //check wallet buyer
+    console.log('=>????????????????????',req.body)
     const checkWalletFromBuyer = await services.wallet.findWalletByUserId(
       req.user.id
     );
@@ -50,7 +51,7 @@ module.exports.placeBuyOrder = async (req, res, next) => {
       req.body.price,
       req.user.id
     );
-    if (matchSaleOrder.inventory.userId === req.user.id) {
+    if (matchSaleOrder && matchSaleOrder.inventory.userId === req.user.id) {
       return res.status(400).json({
         message: "Cant Buy",
       });
@@ -82,6 +83,7 @@ module.exports.placeBuyOrder = async (req, res, next) => {
       });
     }
   } catch (err) {
+    console.log(err)
     next(err);
   }
   return;

@@ -1,6 +1,8 @@
 const prisma = require("../config/prisma")
 
 exports.myInventory = async (userId) => await prisma.inventory.findMany({where : {userId : userId,status : "AVAILABLE"}})
+exports.myInventoryOnWatchId = async (userId,watchId) => await prisma.inventory.findMany({where : {userId : userId,status : "AVAILABLE" ,watchId : watchId}})
+
 exports.findWatchByInventoryId = async (inventoryId) => await prisma.inventory.findUnique({where : {id : inventoryId,status : "AVAILABLE"}})
 exports.createItemInInventory = async (userId,watchId) => await prisma.inventory.create({data : { userId , watchId }})
 exports.updateStatusItem = async ({ inventoryId ,  body }) => {

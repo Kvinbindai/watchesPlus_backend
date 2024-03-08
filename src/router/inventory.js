@@ -6,6 +6,7 @@ const authenticateAdmin = require("../middlewares/authenticateAdmin")
 const inventoryRoute = express.Router()
 
 inventoryRoute.get('/',authenticate,c.inventory.getAllByUserId)
+inventoryRoute.get('/:watchId',authenticate,c.inventory.getAllByUserIdAndWatchId)
 inventoryRoute.post('/',authenticate,validateAddItem,c.inventory.addItemToInventory)
 inventoryRoute.patch('/:inventoryId',authenticate,validateStatus,c.inventory.updateStatusItemInInventory)
 
