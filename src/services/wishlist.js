@@ -52,3 +52,15 @@ exports.deleteWatch = async (watchId) => {
 };
 
 exports.findLike = async (userId, watchId)=> await prisma.wishlist.findFirst({where:{userId, watchId}})
+
+exports.getWatchFromWishlist = async (userId) => {
+  const wishlist = await prisma.wishlist.findMany({
+    where: {
+      userId: userId,
+    }, include: {
+      watch: {include: {brand:true}}
+    }
+  });
+
+  return wishlist;
+};

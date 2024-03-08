@@ -20,6 +20,7 @@ const authenticate = require("../middlewares/authenticate");
 const livechatRoute = require("../router/livechat");
 const profileRoute = require("../router/profile");
 const transactionRoute = require('../router/transaction')
+const shippingRoute = require("../router/shipping");
 const wishlistRoute = require("../router/wishlist");
 
 //=====================================================Server Zone
@@ -30,7 +31,7 @@ module.exports = function restApiServer(app) {
   app.use(json());
   app.use(urlencoded({ extended: false }));
   app.use(express.static("public"));
-  // app.use(clearPhoto); //Delete file in public/images
+  app.use(clearPhoto); //Delete file in public/images
   //=====================================================Routing Zone
   app.use("/ping", (req, res, next) => {
     try {
@@ -49,7 +50,8 @@ module.exports = function restApiServer(app) {
   app.use("/livechat", authenticate, livechatRoute);
   app.use("/profile", profileRoute);
   app.use('/transaction',transactionRoute)
-  app.use("/wishlist", wishlistRoute)
+  app.use("/shipping", shippingRoute);
+  app.use("/wishlist", wishlistRoute);
 
   //=====================================================Throwing Zone
   app.use(notFound);
