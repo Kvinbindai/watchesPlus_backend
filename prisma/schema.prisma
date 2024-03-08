@@ -102,7 +102,7 @@ model SaleOrder {
 model Brand {
   id         Int      @id @default(autoincrement())
   name       String   @unique
-  brandImage String
+  brandImage String   @map("brand_image")
   createdAt  DateTime @default(now()) @map("created_at")
   updatedAt  DateTime @updatedAt @map("updated_at")
   watch      Watch[]
@@ -152,16 +152,18 @@ model Wishlist {
 }
 
 model Inventory {
-  id        Int             @id @default(autoincrement())
-  watchId   Int             @map("watch_id")
-  userId    Int             @map("user_id")
-  status    InventoryStatus @default(PENDING)
-  createdAt DateTime        @default(now()) @map("created_at")
-  updatedAt DateTime        @updatedAt @map("updated_at")
-  user      User            @relation(fields: [userId], references: [id])
-  watch     Watch           @relation(fields: [watchId], references: [id])
-  saleOrder SaleOrder?
-  shipping  Shipping?
+  id              Int             @id @default(autoincrement())
+  watchId         Int             @map("watch_id")
+  userId          Int             @map("user_id")
+  watchImage      String          @map("watch_image")
+  referenceNumber String          @map("reference_number")
+  status          InventoryStatus @default(PENDING)
+  createdAt       DateTime        @default(now()) @map("created_at")
+  updatedAt       DateTime        @updatedAt @map("updated_at")
+  user            User            @relation(fields: [userId], references: [id])
+  watch           Watch           @relation(fields: [watchId], references: [id])
+  saleOrder       SaleOrder?
+  shipping        Shipping?
 
   @@index([userId], map: "inventories_user_id_fkey")
   @@index([watchId], map: "inventories_watch_id_fkey")

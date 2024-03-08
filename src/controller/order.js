@@ -27,7 +27,7 @@ module.exports.getAllActivityAndHistory = async (req, res, next) => {
 module.exports.findOrderToShowOnWatchId = async (req, res, next) => {
   try {
     const { watchId } = req.params;
-    const data = await services.order.findOrderExpectMyIdOnWatchId(req.user.id, +watchId);
+    const data = await services.order.findOrderOnWatchId(req.user.id, +watchId);
     res.json({
       message : "All Order On Market",
       AllBuyOrder : data[0],

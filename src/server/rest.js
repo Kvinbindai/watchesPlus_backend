@@ -30,7 +30,7 @@ module.exports = function restApiServer(app) {
   app.use(json());
   app.use(urlencoded({ extended: false }));
   app.use(express.static("public"));
-  app.use(clearPhoto); //Delete file in public/images
+  // app.use(clearPhoto); //Delete file in public/images
   //=====================================================Routing Zone
   app.use("/ping", (req, res, next) => {
     try {
