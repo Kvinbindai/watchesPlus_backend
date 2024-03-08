@@ -10,7 +10,7 @@ const authenticate = require("../../src/middlewares/authenticate")
 // wishlistRoute.get("/wishlist", authenticate, wishlistController.getWishlist)
 // wishlistRoute.delete("/wishlist/delete/:id", wishlistController.deleteWishlist)
 
-
+wishlistRoute.get("/", authenticate, c.wishlist.getWatchFromWishlist)
 wishlistRoute.post("/:watchId" , authenticate, c.wishlist.addWatchToWishlist)
 wishlistRoute.delete("/:watchId" , authenticate, c.wishlist.deleteWatchFromWishlist)
 

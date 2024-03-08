@@ -60,3 +60,11 @@ exports.deleteWatchFromWishlist = catchError(async (req, res, next) => {
     message:'false'
   });
 });
+
+exports.getWatchFromWishlist = catchError(async (req, res, next) => {
+  const userId = req.user.id; // คาดว่า req.user จะมีข้อมูลของผู้ใช้ที่ได้รับจาก middleware authenticate
+
+  const wishlist = await services.wishlist.getWatchFromWishlist(userId);
+
+  res.status(200).json({ wishlist });
+});
