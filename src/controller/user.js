@@ -14,7 +14,6 @@ module.exports.getAll = async (req, res, next) => {
   }
   return;
 };
-
 module.exports.get = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -25,6 +24,7 @@ module.exports.get = async (req, res, next) => {
   }
   return;
 };
+
 module.exports.login = async (req, res, next) => {
   try {
     const { email, password } = req.body;

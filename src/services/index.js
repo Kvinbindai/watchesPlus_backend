@@ -9,5 +9,6 @@ const services = {
   transaction: require("./transaction"),
   profile: require("./profile"),
   shipping: require("./shipping"),
+  wishlist: require("./wishlist"),
 };
 module.exports = services;
