@@ -1,11 +1,13 @@
 const catchError = require("../utils/catch-error");
 const createError = require("../utils/create-error");
+
 const {
   createChatroomService,
   createMessageService,
   getConversationService,
   getUserByIdService,
   getChatRoomService,
+  getALl,
 } = require("../services/livechat");
 
 exports.createChatRoom = catchError(async (req, res, next) => {
@@ -84,5 +86,16 @@ exports.getConversation = async (req, res, next) => {
   } catch (error) {
     console.log(error);
     next(error);
+  }
+};
+
+///////////////////////////////////////////////////////////////////////
+
+exports.getAllChatroom = async (req, res, next) => {
+  try {
+    const data = await getALl();
+    res.status(200).json({ data });
+  } catch (err) {
+    next(err);
   }
 };

@@ -10,5 +10,6 @@ const services = {
   profile: require("./profile"),
   shipping: require("./shipping"),
   wishlist: require("./wishlist"),
+  livechat: require("./livechat"),
 };
 module.exports = services;
