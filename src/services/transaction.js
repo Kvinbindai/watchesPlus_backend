@@ -19,7 +19,7 @@ exports.createTransactionFromBuyToSale = async (buyerId, body, saleOrder) => {
         walletId: body.walletId,
         watchId: body.watchId,
         price: body.price,
-        status : "SUCCESS"
+        status: "SUCCESS",
       },
     });
     //3. อัพเดท saleOrder ที่เจอให้ Success และ อัพเดท inventoryId นั้นให้เป็น SOLD
@@ -136,5 +136,36 @@ exports.createTransactionFromSaleToBuy = async (sellerId, body, buyOrder) => {
       },
     });
     return transaction;
+  });
+};
+
+exports.getAllTransactionFromWatchId = async (watchId) => {
+  return await prisma.transactionWallet.findMany({
+    where: {
+      watchId,
+    },
+    select: {
+      fromWallet: {
+        select: {
+          user: {
+            select: {
+              profileImage: true,
+              firstName: true,
+            },
+          },
+        },
+      },
+      toWallet: {
+        select: {
+          user: {
+            select: {
+              profileImage: true,
+              firstName: true,
+            },
+          },
+        },
+      },
+      price: true,
+    },
   });
 };

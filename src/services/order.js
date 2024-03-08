@@ -1,7 +1,7 @@
 const prisma = require("../config/prisma");
 const { CustomError } = require("../config/error");
 
-module.exports.findOrderExpectMyIdOnWatchId = async (userId, watchId) => {
+module.exports.findOrderOnWatchId = async (userId, watchId) => {
   return await prisma.$transaction(async (tx) => {
     const myWallet = await tx.wallet.findUnique({
       where: { userId }
@@ -22,7 +22,7 @@ module.exports.findOrderExpectMyIdOnWatchId = async (userId, watchId) => {
       where: {
         inventory: {
           watchId: watchId,
-          status: "SELLING"
+          status: "SELLING",
         },
         NOT: {
           inventory: {
@@ -120,6 +120,11 @@ module.exports.findSaleOrderToMatch = async (watchId, price, buyerId) => {
         status: "PENDING",
         inventory: {
           watchId: watchId,
+        },
+        NOT: {
+          inventory: {
+            userId: buyerId,
+          },
         },
       },
       include: {

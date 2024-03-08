@@ -19,14 +19,18 @@ const generateData = async () => {
         },
       });
     }
-    await tx.brand.createMany({ data: brandData });
-    await tx.watch.createMany({ data: productData });
-    await tx.inventory.createMany({ data: inventoryData });
-    await tx.chatRoom.createMany({ data: chatRoomData });
-    await tx.buyOrder.createMany({ data: buyOrderData });
-    for(let i = 0;i<saleOrderData.length;i++ ){
-      await tx.saleOrder.create({data : saleOrderData[i]})
-    }
+    // await tx.brand.createMany({ data: brandData });
+    // await tx.watch.createMany({ data: productData });
+    // for(let i = 0;i<inventoryData.length;i++ ){
+    //   await tx.inventory.create({data : inventoryData[i]})
+    //  }
+    // await tx.inventory.createMany({data : inventoryData})
+    // await tx.chatRoom.createMany({ data: chatRoomData });
+    // await tx.buyOrder.createMany({ data: buyOrderData });
+    // await tx.saleOrder.createMany({ data: saleOrderData });
+    // for(let i = 0;i<saleOrderData.length;i++ ){
+    //   await tx.saleOrder.create({data : saleOrderData[i]})
+    // }
   });
 };
 

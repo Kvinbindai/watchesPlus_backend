@@ -19,6 +19,7 @@ const walletRoute = require("../router/wallet");
 const authenticate = require("../middlewares/authenticate");
 const livechatRoute = require("../router/livechat");
 const profileRoute = require("../router/profile");
+const transactionRoute = require('../router/transaction')
 const shippingRoute = require("../router/shipping");
 const wishlistRoute = require("../router/wishlist");
 
@@ -48,6 +49,7 @@ module.exports = function restApiServer(app) {
   app.use("/wallet", walletRoute);
   app.use("/livechat", authenticate, livechatRoute);
   app.use("/profile", profileRoute);
+  app.use('/transaction',transactionRoute)
   app.use("/shipping", shippingRoute);
   app.use("/wishlist", wishlistRoute);
 
