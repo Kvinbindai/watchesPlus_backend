@@ -6,6 +6,7 @@ const controller = {
   inventory: require("./inventory"),
   wallet: require("./wallet"),
   profile: require("./profile"),
-  transaction : require('./transaction')
+  transaction : require('./transaction'),
+  wishlist: require("./wishlist")
 };
 module.exports = controller;
