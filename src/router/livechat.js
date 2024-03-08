@@ -5,7 +5,8 @@ const {
   getConversation,
   getUserById,
   getChatroom,
-  getAllChatroom,
+
+  getAllChatroomUser,
 } = require("../controller/livechat");
 
 const router = express.Router();
