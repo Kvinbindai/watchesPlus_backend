@@ -3,6 +3,7 @@ const utils = require("../utils");
 
 const { CustomError } = require("../config/error");
 const { Role } = require("@prisma/client");
+const catchError = require("../utils/catch-error");
 
 module.exports.getAll = async (req, res, next) => {
   try {
@@ -94,11 +95,27 @@ module.exports.update = async (req, res, next) => {
   }
   return;
 };
-module.exports.delete = async (req, res, next) => {
+
+module.exports.changeStatusUserBlock = async (req, res, next) => {
   try {
     const { id } = req.params;
-    await services.user.delete({ id });
-    res.status(200);
+
+    const users = await services.user.changeStatusUserBlock(+id);
+
+    res.status(200).json({ users });
+  } catch (err) {
+    next(err);
+  }
+  return;
+};
+
+module.exports.changeStatusUserUnblock = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const users = await services.user.changeStatusUserUnblock(+id);
+
+    res.status(200).json({ users });
   } catch (err) {
     next(err);
   }

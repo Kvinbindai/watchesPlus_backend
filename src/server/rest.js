@@ -19,6 +19,7 @@ const walletRoute = require("../router/wallet");
 const authenticate = require("../middlewares/authenticate");
 const livechatRoute = require("../router/livechat");
 const profileRoute = require("../router/profile");
+const shippingRoute = require("../router/shipping");
 const wishlistRoute = require("../router/wishlist");
 
 //=====================================================Server Zone
@@ -47,7 +48,8 @@ module.exports = function restApiServer(app) {
   app.use("/wallet", walletRoute);
   app.use("/livechat", authenticate, livechatRoute);
   app.use("/profile", profileRoute);
-  app.use("/wishlist", wishlistRoute)
+  app.use("/shipping", shippingRoute);
+  app.use("/wishlist", wishlistRoute);
 
   //=====================================================Throwing Zone
   app.use(notFound);
