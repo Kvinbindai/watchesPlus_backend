@@ -1,6 +1,6 @@
 const prisma = require("../config/prisma");
 
-module.exports.getAllShippingAdmin = async () =>
+exports.getAllShippingAdmin = async () =>
   await prisma.shipping.findMany({
     include: {
       address: { include: { user: true } },
@@ -10,5 +10,4 @@ module.exports.getAllShippingAdmin = async () =>
     },
   });
 
-module.exports.createTracking = async () =>
-  await prisma.shipping.create({ data });
+exports.createTracking = async () => await prisma.shipping.create({ data });
