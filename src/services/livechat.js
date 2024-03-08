@@ -37,5 +37,5 @@ exports.getChatRoomService = (userId) =>
     include: { sender: true, receiver: true },
   });
 
-exports.getALl = async () =>
+exports.getALlChatroom = async () =>
   await prisma.chatRoom.findMany({ include: { receiver: true, sender: true } });

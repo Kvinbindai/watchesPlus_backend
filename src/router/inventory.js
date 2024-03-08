@@ -29,7 +29,7 @@ inventoryRoute.get(
   "/all",
   authenticate,
   authenticateAdmin,
-  c.inventory.getAllUser
+  c.inventory.getAllInventoryAllUser
 ); // inventory ของ User ทั้งหมด
 
 inventoryRoute.patch(

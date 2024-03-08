@@ -7,6 +7,7 @@ const {
   validateLogin,
   validateChangePassword,
 } = require("../middlewares/validator/user");
+const authenticateAdmin = require("../middlewares/authenticateAdmin");
 
 const userRoute = express.Router();
 
@@ -18,8 +19,18 @@ userRoute.post("/register", validateRegister, c.user.register);
 userRoute.post("/login", validateLogin, c.user.login);
 userRoute.patch("/change-password", c.user.changePassword);
 
-userRoute.put("/:id", c.user.update);
-userRoute.delete("/:id", c.user.changeStatusUserBlock); // block User
-userRoute.patch("/:id", c.user.changeStatusUserUnblock); // เปลี่ยนจาก block เป็นเลิก block
+userRoute.put("/:id", authenticate, c.user.update);
+userRoute.delete(
+  "/:id",
+  authenticate,
+  authenticateAdmin,
+  c.user.changeStatusUserBlock
+); // block User
+userRoute.patch(
+  "/:id",
+  authenticate,
+  authenticateAdmin,
+  c.user.changeStatusUserUnblock
+); // เปลี่ยนจาก block เป็นเลิก block
 
 module.exports = userRoute;

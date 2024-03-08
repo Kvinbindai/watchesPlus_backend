@@ -49,7 +49,7 @@ exports.updateStatusItemInInventory = async (req, res, next) => {
 
 //***************************************** ADMIN ************/
 
-exports.getAllUser = async (req, res, next) => {
+exports.getAllInventoryAllUser = async (req, res, next) => {
   try {
     const data = await services.inventory.getAll();
     res.status(200).json({ data });

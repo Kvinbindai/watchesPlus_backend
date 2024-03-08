@@ -7,7 +7,7 @@ const {
   getConversationService,
   getUserByIdService,
   getChatRoomService,
-  getALl,
+  getALlChatroom,
 } = require("../services/livechat");
 
 exports.createChatRoom = catchError(async (req, res, next) => {
@@ -91,9 +91,9 @@ exports.getConversation = async (req, res, next) => {
 
 ///////////////////////////////////////////////////////////////////////
 
-exports.getAllChatroom = async (req, res, next) => {
+exports.getAllChatroomUser = async (req, res, next) => {
   try {
-    const data = await getALl();
+    const data = await getALlChatroom();
     res.status(200).json({ data });
   } catch (err) {
     next(err);

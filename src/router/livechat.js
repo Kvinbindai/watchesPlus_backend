@@ -16,6 +16,6 @@ router.post("/get-room", getChatroom);
 router.post("/message", createMessage);
 router.post("/get-conversation", getConversation);
 
-router.get("/get-all-chatroom", getAllChatroom);
+router.get("/get-all-chatroom", getAllChatroomUser);
 
 module.exports = router;
