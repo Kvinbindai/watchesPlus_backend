@@ -78,7 +78,7 @@ exports.createMessage = async (req, res, next) => {
 exports.getConversation = async (req, res, next) => {
   try {
     const { chatRoomId } = req.body;
-
+    console.log(req.body);
     const conversation = await getConversationService(chatRoomId);
     res.status(200).json({ conversation });
   } catch (error) {

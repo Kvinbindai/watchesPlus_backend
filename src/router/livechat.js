@@ -13,6 +13,6 @@ router.post("/chat-room", createChatRoom);
 router.get("/get-user", getUserById);
 router.post("/get-room", getChatroom);
 router.post("/message", createMessage);
-router.get("/get-conversation", getConversation);
+router.post("/get-conversation", getConversation);
 
 module.exports = router;

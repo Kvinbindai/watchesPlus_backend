@@ -20,7 +20,7 @@ exports.createMessageService = (senderId, receiverId, chatRoomId, message) =>
     },
   });
 
-exports.getConversationService = (chatRoomId, senderId) =>
+exports.getConversationService = (chatRoomId) =>
   prisma.chatMessage.findMany({
     where: { chatRoomId },
     include: { receiver: true, sender: true },
