@@ -38,9 +38,6 @@ dependencies:
   multer:
     specifier: 1.4.5-lts.1
     version: 1.4.5-lts.1
-  nanoid:
-    specifier: ^5.0.6
-    version: 5.0.6
   omise:
     specifier: ^0.12.0
     version: 0.12.0
@@ -1792,12 +1789,6 @@ packages:
       object-assign: 4.1.1
       type-is: 1.6.18
       xtend: 4.0.2
-    dev: false
-
-  /nanoid@5.0.6:
-    resolution: {integrity: sha512-rRq0eMHoGZxlvaFOUdK1Ev83Bd1IgzzR+WJ3IbDJ7QOSdAxYjlurSPqFs9s4lJg29RT6nPwizFtJhQS6V5xgiA==}
-    engines: {node: ^18 || >=20}
-    hasBin: true
     dev: false
 
   /natural-compare@1.4.0:
