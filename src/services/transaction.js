@@ -1,4 +1,5 @@
 const prisma = require("../config/prisma");
+const { v4: uuidv4 } = require('uuid');
 const { CustomError } = require("../config/error");
 
 //req.user.id,req.body,matchSaleOrder จาก controller
@@ -51,7 +52,7 @@ exports.createTransactionFromBuyToSale = async (buyerId, body, saleOrder) => {
     });
     //6. สร้าง inventory ใหม่ให้ user คนซื้อ
     const createItemWhenBuyerSuccess = await tx.inventory.create({
-      data: { watchId: body.watchId, userId: buyerId, status: "AVAILABLE" },
+      data: { watchId: body.watchId, userId: buyerId, status: "AVAILABLE" , watchImage : "https://res.cloudinary.com/dyqvswimc/image/upload/v1709908762/1709908759590574831651_culxgd.jpg" , referenceNumber : uuidv4()  },
     });
     //7. สร้าง Transaction Type Transfer
     const transaction = await tx.transactionWallet.create({

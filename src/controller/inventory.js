@@ -1,6 +1,6 @@
 const services = require("../services");
 const { v4: uuidv4 } = require('uuid');
-
+const fs = require("fs/promises");
 
 
 exports.getAllByUserId = async (req, res, next) => {
@@ -33,7 +33,10 @@ exports.getAllByUserIdAndWatchId = async ( req , res ,next) =>{
 
 exports.addItemToInventory = async (req,res,next)=>{
     try{
-        if(req.file) req.body.watchImage = await services.upload.upload(req.file.path)
+        if(req.file) {
+          req.body.watchImage = await services.upload.upload(req.file.path)
+          fs.unlink(req.file.path)
+        }
         req.body.watchId = +req.body.watchId
         req.body.referenceNumber = uuidv4()
         const data = await services.inventory.createItemInInventory(req.user.id,req.body)

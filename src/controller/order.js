@@ -42,7 +42,6 @@ module.exports.findOrderToShowOnWatchId = async (req, res, next) => {
 module.exports.placeBuyOrder = async (req, res, next) => {
   try {
     //check wallet buyer
-    console.log('=>????????????????????',req.body)
     const checkWalletFromBuyer = await services.wallet.findWalletByUserId(
       req.user.id
     );

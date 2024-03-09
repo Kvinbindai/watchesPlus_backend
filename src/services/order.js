@@ -1,42 +1,34 @@
 const prisma = require("../config/prisma");
 const { CustomError } = require("../config/error");
 
-module.exports.findOrderOnWatchId = async (userId, watchId) => {
+module.exports.findOrderOnWatchId = async (userId, watchId) => { //เอาทุก order ไป show ที่ product detail
   return await prisma.$transaction(async (tx) => {
     const myWallet = await tx.wallet.findUnique({
-      where: { userId }
-    })
+      where: { userId },
+    });
     const foundAllBuyOrder = await tx.buyOrder.findMany({
       where: {
         watchId: watchId,
         status: "PENDING",
-        NOT: {
-          walletId: myWallet.id
-        }
       },
       orderBy: {
-        price: 'asc'
-      }
-    })
+        price: "asc",
+      },
+    });
     const foundAllSaleOrder = await tx.saleOrder.findMany({
       where: {
         inventory: {
           watchId: watchId,
           status: "SELLING",
         },
-        NOT: {
-          inventory: {
-            userId: userId
-          }
-        }
       },
       orderBy: {
-        price: 'asc'
-      }
-    })
-    return [foundAllBuyOrder, foundAllSaleOrder]
-  })
-}
+        price: "asc",
+      },
+    });
+    return [foundAllBuyOrder, foundAllSaleOrder];
+  });
+};
 
 module.exports.findMyOrder = async (userId) => {
   return await prisma.$transaction(async (tx) => {
@@ -82,7 +74,13 @@ module.exports.findMyAllOrder = async (userId) => {
           status: "SELLING",
         },
       },
-      include: { inventory: { include: { watch: { include: { brand: { select: { name: true } } } } } } },
+      include: {
+        inventory: {
+          include: {
+            watch: { include: { brand: { select: { name: true } } } },
+          },
+        },
+      },
     });
     return { myBuyOrder, mySaleOrder };
   });
@@ -144,11 +142,8 @@ module.exports.findSaleOrderToMatch = async (watchId, price, buyerId) => {
         },
       },
     });
-    if (buyerId === foundSaleOrder.inventory.userId) { //ห้ามซื้อ saleOrder ตัวเอง
-      throw new CustomError("Cant Buy This Order", "WRONG_ID", 400)
-    }
-    return foundSaleOrder
-  })
+    return foundSaleOrder;
+  });
 };
 
 module.exports.findBuyOrderToMatch = async (inventoryId, price) => {
