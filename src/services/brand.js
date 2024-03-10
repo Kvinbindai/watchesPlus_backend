@@ -11,4 +11,4 @@ module.exports.updateBrand = async (brandId, data) => {
   return await prisma.brand.update({ where: { id: brandId }, data });
 };
 module.exports.removeBrand = async (brandId) =>
-  await prisma.brand.delete({ where: { id: brandId } });
+  await prisma.brand.delete({ where: { id: +brandId } });
