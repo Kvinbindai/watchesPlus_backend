@@ -6,17 +6,21 @@ const {
   validateAddBrand,
   validateEditBrand,
 } = require("../middlewares/validator/brand");
+const upload = require("../middlewares/upload");
 const brandRoute = express.Router();
 
 brandRoute.get("/", c.brand.getAll);
 brandRoute.get("/:brandId", c.brand.getOne);
+
 brandRoute.post(
   "/",
   authenticate,
   authenticateAdmin,
+  upload.single("brandImage"),
   validateAddBrand,
   c.brand.addBrand
 );
+
 brandRoute.patch(
   "/:brandId",
   authenticate,
@@ -24,6 +28,7 @@ brandRoute.patch(
   validateEditBrand,
   c.brand.editBrand
 );
+
 brandRoute.delete(
   "/:brandId",
   authenticate,

@@ -13,7 +13,7 @@ exports.getAllShippingAdmin = async () =>
 exports.updateTrackingNumberAdmin = async (id, data) =>
   await prisma.shipping.update({
     where: { id: id },
-    data: { ...data, status: "SUCCESS" },
+    data: { ...data, status: "ONSHIPPING" },
     include: {
       address: { include: { user: true } },
       inventory: {
