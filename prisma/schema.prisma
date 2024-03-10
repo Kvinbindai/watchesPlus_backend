@@ -280,6 +280,8 @@ enum TransactionType {
   DEPOSIT
   WITHDRAW
   TRANSFER
+  PENDING
+  CANCELED
 }
 
 enum OrderStatus {

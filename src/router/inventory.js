@@ -11,8 +11,6 @@ const inventoryRoute = express.Router();
 
 inventoryRoute.get("/", authenticate, c.inventory.getAllByUserId);
 
-inventoryRoute.get('/',authenticate,c.inventory.getAllByUserId)
-
 inventoryRoute.get('/:watchId',authenticate,c.inventory.getAllByUserIdAndWatchId)
 
 inventoryRoute.post('/',upload.single('watchImage'),authenticate,validateAddItem,c.inventory.addItemToInventory)
