@@ -1,4 +1,5 @@
 const prisma = require("../config/prisma");
+const { v4: uuidv4 } = require('uuid');
 const { CustomError } = require("../config/error");
 
 //req.user.id,req.body,matchSaleOrder จาก controller
@@ -19,7 +20,7 @@ exports.createTransactionFromBuyToSale = async (buyerId, body, saleOrder) => {
         walletId: body.walletId,
         watchId: body.watchId,
         price: body.price,
-        status : "SUCCESS"
+        status: "SUCCESS",
       },
     });
     //3. อัพเดท saleOrder ที่เจอให้ Success และ อัพเดท inventoryId นั้นให้เป็น SOLD
@@ -51,7 +52,7 @@ exports.createTransactionFromBuyToSale = async (buyerId, body, saleOrder) => {
     });
     //6. สร้าง inventory ใหม่ให้ user คนซื้อ
     const createItemWhenBuyerSuccess = await tx.inventory.create({
-      data: { watchId: body.watchId, userId: buyerId, status: "AVAILABLE" },
+      data: { watchId: body.watchId, userId: buyerId, status: "AVAILABLE" , watchImage : "https://res.cloudinary.com/dyqvswimc/image/upload/v1709908762/1709908759590574831651_culxgd.jpg" , referenceNumber : uuidv4()  },
     });
     //7. สร้าง Transaction Type Transfer
     const transaction = await tx.transactionWallet.create({
@@ -136,5 +137,36 @@ exports.createTransactionFromSaleToBuy = async (sellerId, body, buyOrder) => {
       },
     });
     return transaction;
+  });
+};
+
+exports.getAllTransactionFromWatchId = async (watchId) => {
+  return await prisma.transactionWallet.findMany({
+    where: {
+      watchId,
+    },
+    select: {
+      fromWallet: {
+        select: {
+          user: {
+            select: {
+              profileImage: true,
+              firstName: true,
+            },
+          },
+        },
+      },
+      toWallet: {
+        select: {
+          user: {
+            select: {
+              profileImage: true,
+              firstName: true,
+            },
+          },
+        },
+      },
+      price: true,
+    },
   });
 };

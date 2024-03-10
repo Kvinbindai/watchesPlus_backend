@@ -15,6 +15,9 @@ module.exports.createUser = async (data) => {
       wallet: {
         create: {},
       },
+      chatRoom : {
+        create : {}
+      }
     },
   });
 };

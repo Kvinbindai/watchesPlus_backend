@@ -6,16 +6,15 @@ const {
   validateStatus,
 } = require("../middlewares/validator/inventory");
 const authenticateAdmin = require("../middlewares/authenticateAdmin");
+const upload = require("../middlewares/upload")
 const inventoryRoute = express.Router();
 
 inventoryRoute.get("/", authenticate, c.inventory.getAllByUserId);
 
-inventoryRoute.post(
-  "/",
-  authenticate,
-  validateAddItem,
-  c.inventory.addItemToInventory
-);
+inventoryRoute.get('/:watchId',authenticate,c.inventory.getAllByUserIdAndWatchId)
+
+inventoryRoute.post('/',upload.single('watchImage'),authenticate,validateAddItem,c.inventory.addItemToInventory)
+
 
 inventoryRoute.patch(
   "/:inventoryId",
@@ -49,3 +48,10 @@ inventoryRoute.delete(
 //*****************************************************/
 
 module.exports = inventoryRoute;
+
+
+
+
+
+
+module.exports = inventoryRoute
