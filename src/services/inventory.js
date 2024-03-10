@@ -2,7 +2,15 @@ const prisma = require("../config/prisma");
 
 exports.myInventory = async (userId) =>
   await prisma.inventory.findMany({
-    where: { userId: userId, status: "AVAILABLE" },
+    where: { userId: userId},
+    include : {
+      watch : {
+        include : {
+          brand: true,
+          wishlist : true
+        }
+      },
+    }
   });
 exports.myInventoryOnWatchId = async (userId,watchId) => await prisma.inventory.findMany({where : {userId : userId,status : "AVAILABLE" ,watchId : watchId}})
 
