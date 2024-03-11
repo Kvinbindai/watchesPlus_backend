@@ -31,6 +31,7 @@ module.exports.createUser = async (data) => {
         userId : newUser.id
       }
     })
+    return newUser
   })
 };
 module.exports.changePasswordWithEmail = async (email, password) =>

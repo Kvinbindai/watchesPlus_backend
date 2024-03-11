@@ -79,6 +79,7 @@ module.exports.register = async (req, res, next) => {
       accessToken: token,
     });
   } catch (err) {
+    console.log(err)
     next(err);
   }
   return;
