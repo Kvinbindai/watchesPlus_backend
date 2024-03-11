@@ -10,6 +10,9 @@ module.exports.findProfileInfoByUserId = async (userId) =>
           amount: true,
         },
       },
+      royalty: {
+        select: { point: true },
+      },
     },
   });
 

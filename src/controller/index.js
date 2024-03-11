@@ -9,5 +9,6 @@ const controller = {
   shipping: require("./shipping"),
   transaction : require('./transaction'),
   wishlist: require("./wishlist"),
+  address: require("./address"),
 };
 module.exports = controller;

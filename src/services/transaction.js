@@ -1,5 +1,5 @@
 const prisma = require("../config/prisma");
-const { v4: uuidv4 } = require('uuid');
+const { v4: uuidv4 } = require("uuid");
 const { CustomError } = require("../config/error");
 
 //req.user.id,req.body,matchSaleOrder จาก controller
@@ -52,7 +52,13 @@ exports.createTransactionFromBuyToSale = async (buyerId, body, saleOrder) => {
     });
     //6. สร้าง inventory ใหม่ให้ user คนซื้อ
     const createItemWhenBuyerSuccess = await tx.inventory.create({
-      data: { watchId: body.watchId, userId: buyerId, status: "AVAILABLE" , watchImage : "https://res.cloudinary.com/dyqvswimc/image/upload/v1709908762/1709908759590574831651_culxgd.jpg" , referenceNumber : uuidv4()  },
+      data: {
+        watchId: body.watchId,
+        userId: buyerId,
+        status: "AVAILABLE",
+        watchImage: foundSellerId.watchImage,
+        referenceNumber: foundSellerId.referenceNumber,
+      },
     });
     //7. สร้าง Transaction Type Transfer
     const transaction = await tx.transactionWallet.create({
@@ -65,6 +71,11 @@ exports.createTransactionFromBuyToSale = async (buyerId, body, saleOrder) => {
         buyOrderId: createBuyOrderThatSuccess.id,
         saleOrderId: saleOrder.id,
       },
+    });
+    // 8. ให้แต้มคนซื้อตอนซื้อขาย
+    const calcPoint = await tx.royalty.update({
+      where: { userId: buyerId },
+      data: { point: Math.floor(body.price / 1000) },
     });
     return transaction;
   });
@@ -107,14 +118,6 @@ exports.createTransactionFromSaleToBuy = async (sellerId, body, buyOrder) => {
         id: buyOrder.walletId,
       },
     });
-    //4.2 สร้าง invnetoryId คนซื้อตาม watchId
-    const createItemInInventory = await tx.inventory.create({
-      data: {
-        watchId: buyOrder.watchId,
-        userId: foundBuyerWallet.userId,
-        status: "AVAILABLE",
-      },
-    });
     //5. update inventoryId ของ seller
     const updateSellerInventory = await tx.inventory.update({
       where: {
@@ -122,6 +125,16 @@ exports.createTransactionFromSaleToBuy = async (sellerId, body, buyOrder) => {
       },
       data: {
         status: "SOLD",
+      },
+    });
+    //4.2 สร้าง invnetoryId คนซื้อตาม watchId
+    const createItemInInventory = await tx.inventory.create({
+      data: {
+        watchId: buyOrder.watchId,
+        userId: foundBuyerWallet.userId,
+        status: "AVAILABLE",
+        watchImage: updateSellerInventory.watchImage,
+        referenceNumber: updateSellerInventory.referenceNumber,
       },
     });
     //6.สร้าง transactionWallet
@@ -135,6 +148,11 @@ exports.createTransactionFromSaleToBuy = async (sellerId, body, buyOrder) => {
         saleOrderId: createSaleOrderIsSuccess.id,
         type: "TRANSFER",
       },
+    });
+    // 8. ให้แต้มคนซื้อตอนซื้อขาย
+    const calcPoint = await tx.royalty.update({
+      where: { userId: foundBuyerWallet.userId },
+      data: { point: Math.floor(body.price / 1000) },
     });
     return transaction;
   });

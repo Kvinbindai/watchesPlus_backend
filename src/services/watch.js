@@ -24,7 +24,9 @@ module.exports.getWatchById = async (watchId) =>
       },
     },
   });
+
 module.exports.addWatch = async (data) => await prisma.watch.create({ data });
+
 module.exports.updateWatch = async (watchId, data) =>
   await prisma.watch.update({ where: { id: watchId }, data });
 module.exports.removeWatch = async (watchId) =>

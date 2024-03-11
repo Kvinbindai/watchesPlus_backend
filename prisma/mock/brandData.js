@@ -1,11 +1,11 @@
 module.exports.brandData = [
   {
     name: "Rolex",
-    brandImage: "tps://logowik.com/content/uploads/images/275_rolex.jpg",
+    brandImage: "https://logowik.com/content/uploads/images/275_rolex.jpg",
   },
   {
     name: "Omega",
-    brandImage: "tps://logowik.com/content/uploads/images/434_omega.jpg",
+    brandImage: "https://logowik.com/content/uploads/images/434_omega.jpg",
   },
   {
     name: "Seiko",
