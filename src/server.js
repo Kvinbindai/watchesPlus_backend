@@ -29,9 +29,6 @@ module.exports = function socketServer() {
 
   io.use((socket, next) => {
     const authUser = socket.handshake.auth.senderId;
-    if (!authUser) {
-      return;
-    }
     console.log(socket.handshake.auth, "auth");
     onlineUser[authUser] = socket.id;
     // console.log(authUser, "authUser");
