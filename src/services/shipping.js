@@ -39,43 +39,43 @@ exports.updateTrackingNumberAdmin = async (id, body) => {
         },
       },
     });
-    return data
+    return data;
   });
 };
 
-exports.getAllShippingByUserId = async(userId) => {
-  return await prisma.$transaction(async(tx) => {
+exports.getAllShippingByUserId = async (userId) => {
+  return await prisma.$transaction(async (tx) => {
     const addressInShipping = await tx.shipping.findMany({
-      where : {
-        status : "ONSHIPPING",
-        address : {
-          userId : userId
-        }
+      where: {
+        status: "ONSHIPPING",
+        address: {
+          userId: userId,
+        },
       },
-      include : {
-        inventory : true
-      }
-    })
-    return addressInShipping
-  })
-}
+      include: {
+        inventory: true,
+      },
+    });
+    return addressInShipping;
+  });
+};
 
-exports.updateStatusToConfirm = async(shippingId) => {
-  return await prisma.$transaction(async(tx)=>{
-    const updateShipping = await tx.shipping.update({
-      where : { id : shippingId},
-      data : { status : "SUCCESS" }
-    })
-    return updateShipping
-  })
-}
-
-exports.updateStatusToFailed = async(shippingId,body) => {
+exports.updateStatusToConfirm = async (shippingId) => {
   return await prisma.$transaction(async (tx) => {
     const updateShipping = await tx.shipping.update({
-      where : { id : shippingId},
-      data : {status : "FAILED" , issue : body.issue}
-    })
-    return updateShipping
-  })
-}
+      where: { id: shippingId },
+      data: { status: "SUCCESS" },
+    });
+    return updateShipping;
+  });
+};
+
+exports.updateStatusToFailed = async (shippingId, body) => {
+  return await prisma.$transaction(async (tx) => {
+    const updateShipping = await tx.shipping.update({
+      where: { id: shippingId },
+      data: { status: "FAILED", issue: body.issue },
+    });
+    return updateShipping;
+  });
+};

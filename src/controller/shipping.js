@@ -8,6 +8,7 @@ exports.getAllshipping = async (req, res, next) => {
       data,
     });
   } catch (err) {
+    console.log(err);
     next(err);
   }
   return;
