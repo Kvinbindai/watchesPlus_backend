@@ -48,8 +48,6 @@ exports.cancelShippingAndUpdateInventoryBack = async (req,res,next)=>{
 
 exports.updateAddressWhereAddressId = async (req,res,next)=>{
     try{
-        console.log(req.body,'asdadasdasdasdas')
-        // console.log(req.params)
         const { addressId } = req.params
         const data = await services.address.updateAddressByInventoryId(+addressId,req.body)
         res.json({
