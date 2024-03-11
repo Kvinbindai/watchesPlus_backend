@@ -22,6 +22,7 @@ const profileRoute = require("../router/profile");
 const transactionRoute = require('../router/transaction')
 const shippingRoute = require("../router/shipping");
 const wishlistRoute = require("../router/wishlist");
+const addressRoute = require("../router/address");
 
 //=====================================================Server Zone
 module.exports = function restApiServer(app) {
@@ -52,6 +53,7 @@ module.exports = function restApiServer(app) {
   app.use('/transaction',transactionRoute)
   app.use("/shipping", shippingRoute);
   app.use("/wishlist", wishlistRoute);
+  app.use('/address',addressRoute)
 
   //=====================================================Throwing Zone
   app.use(notFound);
