@@ -11,5 +11,6 @@ const services = {
   shipping: require("./shipping"),
   wishlist: require("./wishlist"),
   livechat: require("./livechat"),
+  address: require("./address"),
 };
 module.exports = services;
