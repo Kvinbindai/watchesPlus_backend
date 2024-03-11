@@ -93,7 +93,7 @@ module.exports.findMyAllOrder = async (userId) => {
         walletId: myWallet.id,
         OR: [{ status: "CANCELED" }, { status: "SUCCESS" }],
       },
-      include: { watch: true },
+      include: { watch: { include: { brand: { select: { name: true } } } } },
     });
     const mySaleHistory = await tx.saleOrder.findMany({
       where: {
@@ -103,7 +103,7 @@ module.exports.findMyAllOrder = async (userId) => {
           OR: [{ status: "AVAILABLE" }, { status: "SOLD" }],
         },
       },
-      include: { inventory: { include: { watch: true } } },
+      include: { inventory: { include: { watch: { include: { brand: { select: { name: true } } } } } } },
     });
     return { myBuyHistory, mySaleHistory };
   });
@@ -237,4 +237,37 @@ module.exports.updateSaleOrderToCancel = async (id) => {
     });
     return returnItem;
   });
+};
+
+module.exports.findMostBuyOrderAndSaleOrder = async () => {
+  const mostBuyOrders = await prisma.buyOrder.groupBy({
+    by: ['watchId'],
+    _count: {
+      watchId: true,
+    },
+    where: {
+      status: 'PENDING',
+    },
+    orderBy: {
+      _count: {
+        watchId: 'desc',
+      },
+    },
+    take: 4,
+  });
+
+  // Fetching watch details for the grouped buy orders
+  const resultsWithWatchDetails = await Promise.all(
+    mostBuyOrders.map(async (groupedOrder) => {
+      const watchDetails = await prisma.watch.findUnique({
+        where: {
+          id: groupedOrder.watchId,
+        },
+        include: { brand: true, wishlist: true }
+      });
+      return { ...groupedOrder, watch: watchDetails };
+    })
+  );
+
+  return resultsWithWatchDetails;
 };
