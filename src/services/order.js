@@ -177,14 +177,14 @@ module.exports.createBuyOrder = async (buyerWallet, body) => {
     });
     //2. create buyorder
     const createOrder = await tx.buyOrder.create({ data: body });
-    //3. สร้าง transaction ใน wallet status pending
-    const createTransaction = await tx.transactionWallet.create({
+    // create placed transaction
+    const createPlaceTransaction = await tx.transactionWallet.create({
       data: {
+        fromWalletId: buyerWallet.id,
+        price: body.price,
+        type: "PLACED",
         buyOrderId: createOrder.id,
-        watchId: createOrder.watchId,
-        price: createOrder.price,
-        fromWalletId: createOrder.walletId,
-        type: "PENDING",
+        watchId : createOrder.watchId
       },
     });
     return createOrder;
@@ -230,17 +230,12 @@ module.exports.updateBuyOrderToCancel = async (id) => {
         },
       },
     });
-    //3.update transaction ที่ buyOrder และ status Pending
-    const updateTransaction = await tx.transactionWallet.update({
-      where: {
-        fromWalletId: updateBuyerOrder.walletId,
-        buyOrderId: updateBuyerOrder.id,
-        watchId: updateBuyerOrder.watchId,
-        price: updateBuyerOrder.price,
-        type: "PENDING",
-      },
+    // 3.create refund transaction
+    const createRefundTransaction = await tx.transactionWallet.create({
       data: {
-        type: "CANCELED",
+        type: "REFUNDED",
+        price: updateBuyerOrder.price,
+        toWalletId: refundWallet.id,
       },
     });
     return refundWallet;
