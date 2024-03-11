@@ -8,6 +8,7 @@ const { chatRoomData } = require("./mock/chatRoom");
 const { buyOrderData } = require("./mock/buyOrderData");
 const { saleOrderData } = require("./mock/saleOrderData");
 const utils = require("../src/utils");
+const { royaltyData } = require("./mock/royaltyData");
 
 const generateData = async () => {
   return await prisma.$transaction(async (tx) => {
@@ -19,12 +20,13 @@ const generateData = async () => {
         },
       });
     }
+    await tx.royalty.createMany({ data: royaltyData });
     await tx.brand.createMany({ data: brandData });
     await tx.watch.createMany({ data: productData });
     // for(let i = 0;i<inventoryData.length;i++ ){
     //   await tx.inventory.create({data : inventoryData[i]})
     //  }
-    await tx.inventory.createMany({data : inventoryData})
+    await tx.inventory.createMany({ data: inventoryData });
     await tx.chatRoom.createMany({ data: chatRoomData });
     await tx.buyOrder.createMany({ data: buyOrderData });
     await tx.saleOrder.createMany({ data: saleOrderData });
