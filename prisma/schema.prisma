@@ -19,7 +19,7 @@ model User {
   profileImage String?       @map("profile_image")
   createdAt    DateTime      @default(now()) @map("created_at") @db.Timestamp(0)
   updatedAt    DateTime      @updatedAt @map("updated_at") @db.Timestamp(0)
-  address      Address?
+  address      Address[]
   toMessage    ChatMessage[] @relation("receiverId")
   fromMessage  ChatMessage[] @relation("senderId")
   receiver     ChatRoom[]    @relation("receiver")
@@ -45,7 +45,8 @@ model Royalty {
 
 model Address {
   id          Int        @id @default(autoincrement())
-  userId      Int        @unique @map("user_id")
+  userId      Int        @map("user_id")
+  detail      String?
   province    String
   district    String
   subDistrict String?    @map("sub_district")
@@ -164,7 +165,7 @@ model Inventory {
   user            User            @relation(fields: [userId], references: [id])
   watch           Watch           @relation(fields: [watchId], references: [id])
   saleOrder       SaleOrder?
-  shipping        Shipping?
+  shipping        Shipping[]
 
   @@index([userId], map: "inventories_user_id_fkey")
   @@index([watchId], map: "inventories_watch_id_fkey")
@@ -174,8 +175,8 @@ model Inventory {
 model Shipping {
   id             Int            @id @default(autoincrement())
   addressId      Int            @map("address_id")
-  inventoryId    Int            @unique @map("inventory_id")
-  trackingNumber String?
+  inventoryId    Int            @map("inventory_id")
+  trackingNumber String?        @map("tracking_number")
   status         ShippingStatus @default(PENDING)
   createdAt      DateTime       @default(now()) @map("created_at")
   updatedAt      DateTime       @updatedAt @map("updated_at")
@@ -266,15 +267,16 @@ enum InventoryStatus {
   SELLING
   FAILED
   SOLD
+  WAITING
   UNAVAILABLE
 }
 
 enum ShippingStatus {
   PENDING
+  ONSHIPPING
   SUCCESS
   FAILED
   CANCELED
-  ONSHIPPING
 }
 
 enum TransactionType {

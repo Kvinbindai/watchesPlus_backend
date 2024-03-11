@@ -166,6 +166,7 @@ module.exports.findBuyOrderToMatch = async (inventoryId, price) => {
 
 module.exports.createBuyOrder = async (buyerWallet, body) => {
   return await prisma.$transaction(async (tx) => {
+    //1. หักเงินออกจาก wallet buyer
     const updateBuyerWallet = await tx.wallet.update({
       where: { id: buyerWallet.id },
       data: {
@@ -174,6 +175,7 @@ module.exports.createBuyOrder = async (buyerWallet, body) => {
         },
       },
     });
+    //2. create buyorder
     const createOrder = await tx.buyOrder.create({ data: body });
     // create placed transaction
     const createPlaceTransaction = await tx.transactionWallet.create({
@@ -182,6 +184,7 @@ module.exports.createBuyOrder = async (buyerWallet, body) => {
         price: body.price,
         type: "PLACED",
         buyOrderId: createOrder.id,
+        watchId : createOrder.watchId
       },
     });
     return createOrder;
