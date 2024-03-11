@@ -13,6 +13,19 @@ exports.getAllshipping = async (req, res, next) => {
   return;
 };
 
+exports.getMyShipping = async (req, res, next) => {
+  try {
+    const data = await services.shipping.getAllShippingByUserId(req.user.id);
+    res.json({
+      message: "Get all Shipping",
+      data,
+    });
+  } catch (err) {
+    next(err);
+  }
+  return;
+};
+
 exports.updateTrackingAdmin = async (req, res, next) => {
   try {
     const { userId } = req.params;
@@ -32,3 +45,31 @@ exports.updateTrackingAdmin = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.updateStatusConfirmByUser = async (req, res, next) => {
+  try {
+    const { shippingId } = req.params
+    const data = await services.shipping.updateStatusToConfirm(+shippingId);
+    res.json({
+      message : "Update Status to complete",
+      data
+    })
+  } catch (err) {
+    next(err);
+  }
+  return;
+};
+
+exports.updateStatusFailedByUser = async (req,res,next) => {
+  try{
+    const { shippingId } = req.params
+    const data = await services.shipping.updateStatusToFailed(+shippingId);
+    res.json({
+      message : "Update Status to failed",
+      data
+    })
+  }catch(err){
+    next(err)
+  }
+  return
+}

@@ -180,6 +180,7 @@ model Shipping {
   status         ShippingStatus @default(PENDING)
   createdAt      DateTime       @default(now()) @map("created_at")
   updatedAt      DateTime       @updatedAt @map("updated_at")
+  issue          String?
   address        Address        @relation(fields: [addressId], references: [id])
   inventory      Inventory      @relation(fields: [inventoryId], references: [id])
 
