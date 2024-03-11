@@ -23,6 +23,7 @@ const transactionRoute = require('../router/transaction')
 const shippingRoute = require("../router/shipping");
 const wishlistRoute = require("../router/wishlist");
 const addressRoute = require("../router/address");
+const mailRoute = require("../router/mail")
 
 //=====================================================Server Zone
 module.exports = function restApiServer(app) {
@@ -50,10 +51,11 @@ module.exports = function restApiServer(app) {
   app.use("/wallet", walletRoute);
   app.use("/livechat", authenticate, livechatRoute);
   app.use("/profile", profileRoute);
-  app.use('/transaction',transactionRoute)
+  app.use('/transaction', transactionRoute)
   app.use("/shipping", shippingRoute);
   app.use("/wishlist", wishlistRoute);
-  app.use('/address',addressRoute)
+  app.use('/address', addressRoute)
+  app.use("/mail", mailRoute)
 
   //=====================================================Throwing Zone
   app.use(notFound);

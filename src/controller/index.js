@@ -7,8 +7,9 @@ const controller = {
   wallet: require("./wallet"),
   profile: require("./profile"),
   shipping: require("./shipping"),
-  transaction : require('./transaction'),
+  transaction: require('./transaction'),
   wishlist: require("./wishlist"),
   address: require("./address"),
+  mail: require('./mail')
 };
 module.exports = controller;
