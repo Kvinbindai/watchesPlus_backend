@@ -28,7 +28,7 @@ exports.getConversationService = (chatRoomId) =>
 
 exports.getUserByIdService = (id) =>
   prisma.user.findFirst({
-    where: id,
+    where: { id: id },
   });
 
 exports.getChatRoomService = (userId) =>
@@ -39,3 +39,8 @@ exports.getChatRoomService = (userId) =>
 
 exports.getALlChatroom = async () =>
   await prisma.chatRoom.findMany({ include: { receiver: true, sender: true } });
+
+exports.getChatRoomAdminService = async (userId, adminId) =>
+  await prisma.chatRoom.findFirst({
+    where: { AND: [{ userId }, { adminId }] },
+  });

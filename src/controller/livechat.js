@@ -8,6 +8,7 @@ const {
   getUserByIdService,
   getChatRoomService,
   getALlChatroom,
+  getChatRoomAdminService,
 } = require("../services/livechat");
 
 exports.createChatRoom = catchError(async (req, res, next) => {
@@ -27,8 +28,10 @@ exports.createChatRoom = catchError(async (req, res, next) => {
 
 module.exports.getUserById = async (req, res, next) => {
   try {
-    const { id } = req.body;
-    const user = await getUserByIdService({ id });
+    const { userId } = req.body;
+    console.log(req.body, "id-------------------------");
+    const user = await getUserByIdService(userId);
+    delete user.password;
     res.status(200).json({ user });
   } catch (err) {
     console.log(err);
@@ -80,7 +83,7 @@ exports.createMessage = async (req, res, next) => {
 exports.getConversation = async (req, res, next) => {
   try {
     const { chatRoomId } = req.body;
-    console.log(req.body);
+    console.log(req.body, "bodyyyyy--------------------------");
     const conversation = await getConversationService(+chatRoomId);
     res.status(200).json({ conversation });
   } catch (error) {
@@ -97,5 +100,22 @@ exports.getAllChatroomUser = async (req, res, next) => {
     res.status(200).json({ data });
   } catch (err) {
     next(err);
+  }
+};
+
+exports.getChatRoomAdmin = async (req, res, next) => {
+  try {
+    const { id } = req.user;
+    const { userId } = req.body;
+
+    if (id === userId) {
+      createError("Both user must not be the same");
+    }
+
+    const chatRoom = await getChatRoomAdminService(userId, id);
+    res.status(201).json({ chatRoom });
+  } catch (error) {
+    console.log(error);
+    next(error);
   }
 };
