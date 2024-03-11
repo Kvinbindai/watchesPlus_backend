@@ -70,11 +70,11 @@ exports.updateStatusToConfirm = async(shippingId) => {
   })
 }
 
-exports.updateStatusToFailed = async(shippingId) => {
+exports.updateStatusToFailed = async(shippingId,body) => {
   return await prisma.$transaction(async (tx) => {
     const updateShipping = await tx.shipping.update({
       where : { id : shippingId},
-      data : {status : "FAILED"}
+      data : {status : "FAILED" , issue : body.issue}
     })
     return updateShipping
   })

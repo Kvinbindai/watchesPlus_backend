@@ -63,7 +63,7 @@ exports.updateStatusConfirmByUser = async (req, res, next) => {
 exports.updateStatusFailedByUser = async (req,res,next) => {
   try{
     const { shippingId } = req.params
-    const data = await services.shipping.updateStatusToFailed(+shippingId);
+    const data = await services.shipping.updateStatusToFailed(+shippingId,req.body);
     res.json({
       message : "Update Status to failed",
       data
