@@ -46,6 +46,7 @@ model Royalty {
 model Address {
   id          Int        @id @default(autoincrement())
   userId      Int        @map("user_id")
+  detail      String?
   province    String
   district    String
   subDistrict String?    @map("sub_district")
