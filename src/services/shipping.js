@@ -10,21 +10,6 @@ exports.getAllShippingAdmin = async () =>
     },
   });
 
-// exports.updateTrackingNumberAdmin = async (id, data) =>
-//   await prisma.shipping.update({
-//     where: { id: id },
-//     data: {
-//       ...data,
-//       status: "ONSHIPPING",
-//     },
-//     include: {
-//       address: { include: { user: true } },
-//       inventory: {
-//         include: { watch: { include: { brand: true } }, user: true },
-//       },
-//     },
-//   });
-
 exports.updateTrackingNumberAdmin = async (id, body) => {
   return await prisma.$transaction(async (tx) => {
     //1.update shipping
@@ -55,5 +40,42 @@ exports.updateTrackingNumberAdmin = async (id, body) => {
       },
     });
     return data;
+  });
+};
+
+exports.getAllShippingByUserId = async (userId) => {
+  return await prisma.$transaction(async (tx) => {
+    const addressInShipping = await tx.shipping.findMany({
+      where: {
+        status: "ONSHIPPING",
+        address: {
+          userId: userId,
+        },
+      },
+      include: {
+        inventory: true,
+      },
+    });
+    return addressInShipping;
+  });
+};
+
+exports.updateStatusToConfirm = async (shippingId) => {
+  return await prisma.$transaction(async (tx) => {
+    const updateShipping = await tx.shipping.update({
+      where: { id: shippingId },
+      data: { status: "SUCCESS" },
+    });
+    return updateShipping;
+  });
+};
+
+exports.updateStatusToFailed = async (shippingId, body) => {
+  return await prisma.$transaction(async (tx) => {
+    const updateShipping = await tx.shipping.update({
+      where: { id: shippingId },
+      data: { status: "FAILED", issue: body.issue },
+    });
+    return updateShipping;
   });
 };

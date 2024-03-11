@@ -58,7 +58,7 @@ exports.createTransactionFromBuyToSale = async (buyerId, body, saleOrder) => {
         status: "AVAILABLE",
         watchImage:
           foundSellerId.watchImage,
-        referenceNumber: uuidv4(),
+        referenceNumber: foundSellerId.referenceNumber,
       },
     });
     //7. สร้าง Transaction Type Transfer

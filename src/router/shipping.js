@@ -8,7 +8,18 @@ const {
 const authenticateAdmin = require("../middlewares/authenticateAdmin");
 const shippingRoute = express.Router();
 
-shippingRoute.get("/", c.shipping.getAllshipping);
+shippingRoute.get("/", authenticate, c.shipping.getAllshipping);
+shippingRoute.get("/all", authenticate, c.shipping.getMyShipping);
+shippingRoute.patch(
+  "/confirm/:shippingId",
+  authenticate,
+  c.shipping.updateStatusConfirmByUser
+);
+shippingRoute.patch(
+  "/cancel/:shippingId",
+  authenticate,
+  c.shipping.updateStatusFailedByUser
+);
 shippingRoute.patch(
   "/admin/:userId",
   authenticate,

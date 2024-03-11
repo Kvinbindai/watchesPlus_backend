@@ -81,12 +81,16 @@ exports.getAddressByInventoryId = async (inventoryId) => {
     })
 }
 
-exports.updateAddressByInventoryId = async (body) => {
+exports.updateAddressByInventoryId = async (addressId,body) => {
     return await prisma.$transaction(async(tx)=>{
         const updateAddress = await tx.address.update({
             where : {
-                
+                id : addressId
+            },
+            data : {
+                ...body
             }
         })
+        return updateAddress
     })
 }
