@@ -1,7 +1,8 @@
 const prisma = require("../config/prisma");
 const { CustomError } = require("../config/error");
 
-module.exports.findOrderOnWatchId = async (userId, watchId) => { //เอาทุก order ไป show ที่ product detail
+module.exports.findOrderOnWatchId = async (userId, watchId) => {
+  //เอาทุก order ไป show ที่ product detail
   return await prisma.$transaction(async (tx) => {
     const myWallet = await tx.wallet.findUnique({
       where: { userId },
@@ -174,6 +175,15 @@ module.exports.createBuyOrder = async (buyerWallet, body) => {
       },
     });
     const createOrder = await tx.buyOrder.create({ data: body });
+    // create placed transaction
+    const createPlaceTransaction = await tx.transactionWallet.create({
+      data: {
+        fromWalletId: buyerWallet.id,
+        price: body.price,
+        type: "PLACED",
+        buyOrderId: createOrder.id,
+      },
+    });
     return createOrder;
   });
 };
@@ -215,6 +225,14 @@ module.exports.updateBuyOrderToCancel = async (id) => {
         amount: {
           increment: updateBuyerOrder.price,
         },
+      },
+    });
+    // 3.create refund transaction
+    const createRefundTransaction = await tx.transactionWallet.create({
+      data: {
+        type: "REFUNDED",
+        price: updateBuyerOrder.price,
+        toWalletId: refundWallet.id,
       },
     });
     return refundWallet;
