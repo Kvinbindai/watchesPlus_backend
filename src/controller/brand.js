@@ -31,6 +31,7 @@ module.exports.getOne = async (req, res, next) => {
 
 module.exports.addBrand = async (req, res, next) => {
   try {
+    console.log(req.file, "check file");
     if (req.file) {
       req.body.brandImage = await services.upload.upload(req.file.path);
       fs.unlink(req.file.path);
@@ -52,11 +53,13 @@ module.exports.addBrand = async (req, res, next) => {
 module.exports.editBrand = async (req, res, next) => {
   try {
     const { brandId } = req.params;
+    console.log(req.file, req.body, "try upload");
     if (req.file) {
-      req.body.watchImage = await services.upload.upload(req.file.path);
+      req.body.brandImage = await services.upload.upload(req.file.path);
       fs.unlink(req.file.path);
     }
     const data = await services.brand.updateBrand(+brandId, req.body);
+
     res.json({
       message: "Update Brand Complete",
       data,
