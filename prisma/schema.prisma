@@ -19,7 +19,7 @@ model User {
   profileImage String?       @map("profile_image")
   createdAt    DateTime      @default(now()) @map("created_at") @db.Timestamp(0)
   updatedAt    DateTime      @updatedAt @map("updated_at") @db.Timestamp(0)
-  address      Address?
+  address      Address[]
   toMessage    ChatMessage[] @relation("receiverId")
   fromMessage  ChatMessage[] @relation("senderId")
   receiver     ChatRoom[]    @relation("receiver")
@@ -45,7 +45,8 @@ model Royalty {
 
 model Address {
   id          Int        @id @default(autoincrement())
-  userId      Int        @unique @map("user_id")
+  userId      Int        @map("user_id")
+  detail      String?
   province    String
   district    String
   subDistrict String?    @map("sub_district")
@@ -84,6 +85,7 @@ model BuyOrder {
   TransactionWallet TransactionWallet?
 
   @@index([walletId], map: "buy_orders_wallet_id_fkey")
+  @@index([watchId], map: "buy_orders_watch_id_fkey")
   @@map("buy_orders")
 }
 
@@ -163,7 +165,7 @@ model Inventory {
   user            User            @relation(fields: [userId], references: [id])
   watch           Watch           @relation(fields: [watchId], references: [id])
   saleOrder       SaleOrder?
-  shipping        Shipping?
+  shipping        Shipping[]
 
   @@index([userId], map: "inventories_user_id_fkey")
   @@index([watchId], map: "inventories_watch_id_fkey")
@@ -173,8 +175,8 @@ model Inventory {
 model Shipping {
   id             Int            @id @default(autoincrement())
   addressId      Int            @map("address_id")
-  inventoryId    Int            @unique @map("inventory_id")
-  trackingNumber String?
+  inventoryId    Int            @map("inventory_id")
+  trackingNumber String?        @map("tracking_number")
   status         ShippingStatus @default(PENDING)
   createdAt      DateTime       @default(now()) @map("created_at")
   updatedAt      DateTime       @updatedAt @map("updated_at")
@@ -195,11 +197,11 @@ model TransactionWallet {
   buyOrderId   Int?            @unique @map("buy_order_id")
   saleOrderId  Int?            @unique @map("sale_order_id")
   createdAt    DateTime        @default(now()) @map("created_at")
-  watch        Watch?          @relation(fields: [watchId], references: [id])
   buyOrder     BuyOrder?       @relation(fields: [buyOrderId], references: [id])
-  saleOrder    SaleOrder?      @relation(fields: [saleOrderId], references: [id])
   fromWallet   Wallet?         @relation("fromWallet", fields: [fromWalletId], references: [id])
+  saleOrder    SaleOrder?      @relation(fields: [saleOrderId], references: [id])
   toWallet     Wallet?         @relation("toWallet", fields: [toWalletId], references: [id])
+  watch        Watch?          @relation(fields: [watchId], references: [id])
 
   @@index([fromWalletId], map: "transaction_wallets_from_wallet_id_fkey")
   @@index([toWalletId], map: "transaction_wallets_to_wallet_id_fkey")
@@ -265,23 +267,24 @@ enum InventoryStatus {
   SELLING
   FAILED
   SOLD
+  WAITING
   UNAVAILABLE
 }
 
 enum ShippingStatus {
   PENDING
+  ONSHIPPING
   SUCCESS
   FAILED
   CANCELED
-  ONSHIPPING
 }
 
 enum TransactionType {
   DEPOSIT
   WITHDRAW
   TRANSFER
-  PENDING
-  CANCELED
+  PLACED
+  REFUNDED
 }
 
 enum OrderStatus {
