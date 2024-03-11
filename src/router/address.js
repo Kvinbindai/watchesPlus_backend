@@ -7,7 +7,9 @@ const addressRoute = express.Router();
 
 addressRoute.get('/:inventoryId',authenticate,c.address.getAddressFromInventoryId)
 addressRoute.post('/',authenticate,validateAddAddress,c.address.addAddressAndShippingOrder)
+addressRoute.patch('/:addressId',authenticate,c.address.updateAddressWhereAddressId)
 addressRoute.patch('/cancel',authenticate,c.address.cancelShippingAndUpdateInventoryBack)
+
 
 
 

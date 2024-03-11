@@ -31,7 +31,7 @@ const generateData = async () => {
     // for(let i = 0;i<saleOrderData.length;i++ ){
     //   await tx.saleOrder.create({data : saleOrderData[i]})
     // }
-  });
+  },{timeout : 20000});
 };
 
 generateData();
