@@ -29,14 +29,15 @@ module.exports.findOrderToShowOnWatchId = async (req, res, next) => {
     const { watchId } = req.params;
     const data = await services.order.findOrderOnWatchId(req.user.id, +watchId);
     res.json({
-      message : "All Order On Market",
-      AllBuyOrder : data[0],
-      AllSaleOrder : data[1],
+      message: "All Order On Market",
+      AllBuyOrder: data[0],
+      AllSaleOrder: data[1],
     })
   } catch (err) {
+    console.log(err);
     next(err);
   }
-  return;
+
 };
 
 module.exports.placeBuyOrder = async (req, res, next) => {
@@ -161,3 +162,16 @@ module.exports.cancelSaleOrder = async (req, res, next) => {
   }
   return;
 };
+
+module.exports.findMostOrder = async (req, res, next) => {
+  try {
+    const data = await services.order.findMostBuyOrderAndSaleOrder()
+    res.status(200).json({
+      message: "Get most buy and sale orders success",
+      data
+    })
+  } catch (err) {
+    console.log(err);
+    next(err)
+  }
+}

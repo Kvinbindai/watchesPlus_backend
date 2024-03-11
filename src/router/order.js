@@ -3,9 +3,11 @@ const c = require("../controller");
 const authenticate = require("../middlewares/authenticate");
 const orderRoute = express.Router();
 
+
 orderRoute.get("/", authenticate, c.order.getAllOrder);
 orderRoute.get("/history", authenticate, c.order.getAllActivityAndHistory);
-orderRoute.get('/:watchId',authenticate,c.order.findOrderToShowOnWatchId)
+orderRoute.get("/most-order", c.order.findMostOrder);
+orderRoute.get("/:watchId", authenticate, c.order.findOrderToShowOnWatchId);
 orderRoute.post("/buy", authenticate, c.order.placeBuyOrder);
 orderRoute.post("/sale", authenticate, c.order.placeSaleOrder);
 orderRoute.patch("/buy/:buyOrderId", authenticate, c.order.cancelBuyOrder);
