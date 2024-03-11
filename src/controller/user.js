@@ -36,6 +36,9 @@ module.exports.login = async (req, res, next) => {
         "WRONG_INPUT",
         400
       );
+    else if (user.status === "INACTIVE") {
+      throw new CustomError("Your user was blocked", "Blocked", 400);
+    }
 
     // COMPARE password with database
     const result = await utils.bcrypt.compare(password, user.password);
@@ -79,7 +82,7 @@ module.exports.register = async (req, res, next) => {
       accessToken: token,
     });
   } catch (err) {
-    console.log(err)
+    console.log(err);
     next(err);
   }
   return;
