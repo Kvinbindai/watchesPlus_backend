@@ -5,6 +5,7 @@ exports.createAddressAndShippingOrder = async (userId, body) => {
         //1. create Address
         const address = await tx.address.create({
             data: {
+                detail : body.detail,
                 province: body.province,
                 district: body.district,
                 subDistrict: body.subDistrict,
@@ -22,7 +23,6 @@ exports.createAddressAndShippingOrder = async (userId, body) => {
                 status: "WAITING"
             }
         })
-        console.log(updateStatusItemInInventory)
         //3. create Shipping
         const shipping = await tx.shipping.create({
             data: {
