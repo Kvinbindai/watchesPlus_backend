@@ -11,6 +11,9 @@ module.exports.findOrderOnWatchId = async (userId, watchId) => {
       where: {
         watchId: watchId,
         status: "PENDING",
+        NOT : {
+          walletId : myWallet.id
+        }
       },
       orderBy: {
         price: "asc",
@@ -21,6 +24,9 @@ module.exports.findOrderOnWatchId = async (userId, watchId) => {
         inventory: {
           watchId: watchId,
           status: "SELLING",
+          NOT : {
+            userId : userId
+          }
         },
       },
       orderBy: {
