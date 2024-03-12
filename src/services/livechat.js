@@ -44,3 +44,10 @@ exports.getChatRoomAdminService = async (userId, adminId) =>
   await prisma.chatRoom.findFirst({
     where: { AND: [{ userId }, { adminId }] },
   });
+
+exports.sortNewChat = async () =>
+  await prisma.chatMessage.findMany({
+    orderBy: { createdAt: "desc" },
+    distinct: ["chatRoomId"],
+    include: { chatRoom: true, sender: true, receiver: true },
+  });

@@ -8,6 +8,7 @@ const {
 
   getAllChatroomUser,
   getChatRoomAdmin,
+  getAllConversation,
 } = require("../controller/livechat");
 
 const router = express.Router();
@@ -19,5 +20,6 @@ router.post("/message", createMessage);
 router.post("/get-conversation", getConversation);
 router.post("/get-chatroom-admin", getChatRoomAdmin);
 router.get("/get-all-chatroom", getAllChatroomUser);
+router.get("/get-all-conversation", getAllConversation);
 
 module.exports = router;
