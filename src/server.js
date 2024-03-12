@@ -71,7 +71,7 @@ module.exports = function socketServer() {
   });
 
   //   const PORT = process.env.PORT || 8080;
-  const PORT = 8888;
+  const PORT = process.env.CHAT_PORT;
   // console.log(PORT);
   server.listen(PORT, () => {
     console.log(`Socket io server is running on port ${PORT}`);
