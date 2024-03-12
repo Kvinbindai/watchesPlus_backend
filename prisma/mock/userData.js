@@ -3,7 +3,7 @@ module.exports.userData = [
     { //1
         "firstName" : "admin",
         "lastName" : "admin",
-        "email": "admin@gmail.com",
+        "email": "watchespluscc16@gmail.com",
         "password": "123456",
         "role" : "ADMIN"
     },
