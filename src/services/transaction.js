@@ -174,6 +174,8 @@ exports.getAllTransactionFromWatchId = async (watchId) => {
           user : true
         }
       },
+    },orderBy : {
+      createdAt : 'desc'
     }
     // select: {
     //   fromWallet: {
