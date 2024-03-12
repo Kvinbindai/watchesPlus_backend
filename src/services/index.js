@@ -12,5 +12,6 @@ const services = {
   wishlist: require("./wishlist"),
   livechat: require("./livechat"),
   address: require("./address"),
+  mail: require('./mail')
 };
 module.exports = services;
