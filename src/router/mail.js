@@ -6,7 +6,7 @@ const authenticateAdmin = require('../middlewares/authenticateAdmin')
 const mailRoute = express.Router()
 
 // admin >> route admin
-mailRoute.post('/confirm-product/:inventoryId', authenticate, authenticateAdmin, c.mail.confirmProductByadmin)
+mailRoute.post('/confirm-product/:inventoryId', authenticate, authenticateAdmin, c.mail.confirmProductByAdmin)
 
 // seller
 mailRoute.post('/sell-success/:inventoryId', authenticate, c.mail.sellSuccessfully)

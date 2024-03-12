@@ -77,7 +77,7 @@ exports.createTransactionFromBuyToSale = async (buyerId, body, saleOrder) => {
       where: { userId: buyerId },
       data: { point: Math.floor(body.price / 1000) },
     });
-    return transaction;
+    return [transaction,createItemWhenBuyerSuccess]
   });
 };
 exports.createTransactionFromSaleToBuy = async (sellerId, body, buyOrder) => {
@@ -154,7 +154,7 @@ exports.createTransactionFromSaleToBuy = async (sellerId, body, buyOrder) => {
       where: { userId: foundBuyerWallet.userId },
       data: { point: Math.floor(body.price / 1000) },
     });
-    return transaction;
+    return [transaction,createItemInInventory];
   });
 };
 

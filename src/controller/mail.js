@@ -16,7 +16,7 @@ const transporter = nodemailer.createTransport({
 })
 
 // admin >> route admin
-module.exports.confirmProductByadmin = catchError(async (req, res, next) => {
+module.exports.confirmProductByAdmin = catchError(async (req, res, next) => {
     const data = await service.mail.getEmailUser(+req.params.inventoryId)
     if (!data) createError('invalid inventoryId')
     const info = await transporter.sendMail({
