@@ -19,7 +19,10 @@ const addAddressSchema = Joi.object({
     }),
     referenceNumber :Joi.string().required().messages({
         "any.required": "referenceNumber is required",
-    })
+    }),
+    detail :  Joi.string().required().trim().messages({
+        "any.required": "detail is required",
+    }),
 })
 
 

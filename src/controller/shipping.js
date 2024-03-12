@@ -1,4 +1,13 @@
 const services = require("../services");
+const nodemailer = require("nodemailer");
+
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.MAIL_SENDER_ADMIN,
+    pass: process.env.MAIL_SECRETKEY,
+  },
+});
 
 exports.getAllshipping = async (req, res, next) => {
   try {
@@ -51,6 +60,22 @@ exports.updateStatusConfirmByUser = async (req, res, next) => {
   try {
     const { shippingId } = req.params
     const data = await services.shipping.updateStatusToConfirm(+shippingId);
+    const foundUser = await services.mail.getEmailUser(data.inventoryId)
+    
+    const mailConfirm = await transporter.sendMail({
+        from: `"A BIG WatchesPlus+" <watchespluscc16@gmail.com>`,
+        to: `${foundUser.user.email}`,
+        subject: 'Thank you for your confirm product',
+        html: `
+        <h1>WatchesPlus</h1>
+        <div style='font-size:20px; padding-bottom: 10px'>Reference No. ${foundUser.referenceNumber}</div>
+        <div style='padding-bottom: 10px'>Model : ${foundUser.watch.modelName}</div>
+        <div style='padding-bottom: 10px'>Brand : ${foundUser.watch.brand.name}</div>
+        <div style='padding-bottom: 10px'>Watches more >> http://localhost:5173</div>
+        <img style='padding-bottom: 10px' src="${foundUser.watchImage}"/>
+        <div style='padding-bottom: 10px'>Good luck</div>
+        `
+    }) 
     res.json({
       message : "Update Status to complete",
       data
@@ -65,6 +90,22 @@ exports.updateStatusFailedByUser = async (req,res,next) => {
   try{
     const { shippingId } = req.params
     const data = await services.shipping.updateStatusToFailed(+shippingId,req.body);
+
+    const foundUser = await services.mail.getEmailUser(data.inventoryId)
+    const mailToUser = await transporter.sendMail({
+        from: `"A BIG WatchesPlus+" <watchespluscc16@gmail.com>`,
+        to: `${foundUser.user.email}`,
+        subject: `${foundUser.watch.modelName} be canceled`,
+        html: `
+        <h1>WatchesPlus</h1>
+        <div style='font-size:20px; padding-bottom: 10px'>Reference No. ${foundUser.referenceNumber}</div>
+        <div style='padding-bottom: 10px'>Model : ${foundUser.watch.modelName}</div>
+        <div style='padding-bottom: 10px'>Brand : ${foundUser.watch.brand.name}</div>
+        <div style='padding-bottom: 10px'>Watches more >> http://localhost:5173</div>
+        <img style='padding-bottom: 10px' src="${foundUser.watchImage}"/>
+        <div style='padding-bottom: 10px'>Good luck</div>
+        `
+    })
     res.json({
       message : "Update Status to failed",
       data

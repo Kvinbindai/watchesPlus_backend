@@ -1,6 +1,16 @@
 const services = require("../services");
 const { CustomError } = require("../config/error");
 
+const nodemailer = require("nodemailer");
+
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.MAIL_SENDER_ADMIN,
+    pass: process.env.MAIL_SECRETKEY,
+  },
+});
+
 module.exports.getAllOrder = async (req, res, next) => {
   try {
     const data = await services.order.findMyOrder(req.user.id);
@@ -32,12 +42,11 @@ module.exports.findOrderToShowOnWatchId = async (req, res, next) => {
       message: "All Order On Market",
       AllBuyOrder: data[0],
       AllSaleOrder: data[1],
-    })
+    });
   } catch (err) {
     console.log(err);
     next(err);
   }
-
 };
 
 module.exports.placeBuyOrder = async (req, res, next) => {
@@ -51,6 +60,7 @@ module.exports.placeBuyOrder = async (req, res, next) => {
       req.body.price,
       req.user.id
     );
+
     if (matchSaleOrder && matchSaleOrder.inventory.userId === req.user.id) {
       return res.status(400).json({
         message: "Cant Buy",
@@ -67,9 +77,46 @@ module.exports.placeBuyOrder = async (req, res, next) => {
         req.body,
         matchSaleOrder
       );
+
+      //ส่งเมลให้คนขาย ว่า ขายสำเร็จ
+      const foundSellerUser = await services.mail.getEmailUser(
+        matchSaleOrder.inventoryId
+      );
+      const mailToSeller = await transporter.sendMail({
+        from: `"A BIG WatchesPlus+" <watchespluscc16@gmail.com>`,
+        to: `${foundSellerUser.user.email}`,
+        subject: "You have sold an item on the Community Market",
+        html: `
+          <h1>WatchesPlus</h1>
+          <div style='font-size:20px; padding-bottom: 10px'>Reference No. ${foundSellerUser.referenceNumber}</div>
+          <div style='padding-bottom: 10px'>Model : ${foundSellerUser.watch.modelName}</div>
+          <div style='padding-bottom: 10px'>Brand : ${foundSellerUser.watch.brand.name}</div>
+          <div style='padding-bottom: 10px'>Watches more >> http://localhost:5173</div>
+          <img style='padding-bottom: 10px' src="${foundSellerUser.watchImage}"/>
+          <div style='padding-bottom: 10px'>Good luck</div>
+          `,
+      });
+
+      //ส่งเมลให้คนซื้อว่า ของเข้าสำเร็จ
+      const foundBuyerInventory = await services.mail.getEmailUser(data[1].id);
+      const mailToBuyer = await transporter.sendMail({
+        from: `"A BIG WatchesPlus+" <watchespluscc16@gmail.com>`,
+        to: `${foundBuyerInventory.user.email}`,
+        subject: "Thank you for your Community Market purchase",
+        html: `
+        <h1>WatchesPlus</h1>
+        <div style='font-size:20px; padding-bottom: 10px'>Reference No. ${foundBuyerInventory.referenceNumber}</div>
+        <div style='padding-bottom: 10px'>Model : ${foundBuyerInventory.watch.modelName}</div>
+        <div style='padding-bottom: 10px'>Brand : ${foundBuyerInventory.watch.brand.name}</div>
+        <div style='padding-bottom: 10px'>Watches more >> http://localhost:5173</div>
+        <img style='padding-bottom: 10px' src="${foundBuyerInventory.watchImage}"/>
+        <div style='padding-bottom: 10px'>Good luck</div>
+        `,
+      });
+
       return res.json({
         message: "Create Transfer Transaction",
-        data,
+        data: data[0],
       });
     } else {
       //case ไม่ match หาไม่เจอ
@@ -83,7 +130,7 @@ module.exports.placeBuyOrder = async (req, res, next) => {
       });
     }
   } catch (err) {
-    console.log(err)
+    console.log(err);
     next(err);
   }
   return;
@@ -110,9 +157,46 @@ module.exports.placeSaleOrder = async (req, res, next) => {
         req.body,
         matchBuyOrder
       );
+
+       //ส่งเมลให้คนขาย ว่า ขายสำเร็จ
+       const foundSellerUser = await services.mail.getEmailUser(
+        req.body.inventoryId
+      );
+      const mailToSeller = await transporter.sendMail({
+        from: `"A BIG WatchesPlus+" <watchespluscc16@gmail.com>`,
+        to: `${foundSellerUser.user.email}`,
+        subject: "You have sold an item on the Community Market",
+        html: `
+          <h1>WatchesPlus</h1>
+          <div style='font-size:20px; padding-bottom: 10px'>Reference No. ${foundSellerUser.referenceNumber}</div>
+          <div style='padding-bottom: 10px'>Model : ${foundSellerUser.watch.modelName}</div>
+          <div style='padding-bottom: 10px'>Brand : ${foundSellerUser.watch.brand.name}</div>
+          <div style='padding-bottom: 10px'>Watches more >> http://localhost:5173</div>
+          <img style='padding-bottom: 10px' src="${foundSellerUser.watchImage}"/>
+          <div style='padding-bottom: 10px'>Good luck</div>
+          `,
+      });
+
+      //ส่งเมลให้คนซื้อว่า ของเข้าสำเร็จ
+      const foundBuyerInventory = await services.mail.getEmailUser(data[1].id);
+      const mailToBuyer = await transporter.sendMail({
+        from: `"A BIG WatchesPlus+" <watchespluscc16@gmail.com>`,
+        to: `${foundBuyerInventory.user.email}`,
+        subject: "Thank you for your Community Market purchase",
+        html: `
+        <h1>WatchesPlus</h1>
+        <div style='font-size:20px; padding-bottom: 10px'>Reference No. ${foundBuyerInventory.referenceNumber}</div>
+        <div style='padding-bottom: 10px'>Model : ${foundBuyerInventory.watch.modelName}</div>
+        <div style='padding-bottom: 10px'>Brand : ${foundBuyerInventory.watch.brand.name}</div>
+        <div style='padding-bottom: 10px'>Watches more >> http://localhost:5173</div>
+        <img style='padding-bottom: 10px' src="${foundBuyerInventory.watchImage}"/>
+        <div style='padding-bottom: 10px'>Good luck</div>
+        `,
+      });
+
       return res.json({
         message: "Create Transfer Transaction",
-        data,
+        data : data[0],
       });
     } else {
       //case ไม่ match หาไม่เจอ
@@ -165,13 +249,13 @@ module.exports.cancelSaleOrder = async (req, res, next) => {
 
 module.exports.findMostOrder = async (req, res, next) => {
   try {
-    const data = await services.order.findMostBuyOrderAndSaleOrder()
+    const data = await services.order.findMostBuyOrderAndSaleOrder();
     res.status(200).json({
       message: "Get most buy and sale orders success",
-      data
-    })
+      data,
+    });
   } catch (err) {
     console.log(err);
-    next(err)
+    next(err);
   }
-}
+};
