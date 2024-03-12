@@ -5,12 +5,12 @@ module.exports.getAllWatch = async () =>
 module.exports.getBySearch = async (modelName) =>
   await prisma.watch.findMany({
     where: { modelName },
-    include: { brand: { select: { name: true } }, wishlist: true },
+    include: { brand: true, wishlist: true },
   });
 module.exports.getBySearchEnter = async (searchEnter) =>
   await prisma.watch.findMany({
     where: { modelName: { contains: searchEnter } },
-    include: { brand: { select: { name: true } }, wishlist: true },
+    include: { brand: true, wishlist: true },
   });
 module.exports.getWatchById = async (watchId) =>
   await prisma.watch.findFirst({
