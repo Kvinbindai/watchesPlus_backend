@@ -9,6 +9,8 @@ const {
   getChatRoomService,
   getALlChatroom,
   getChatRoomAdminService,
+  getAllConversationService,
+  sortNewChat,
 } = require("../services/livechat");
 
 exports.createChatRoom = catchError(async (req, res, next) => {
@@ -113,6 +115,16 @@ exports.getChatRoomAdmin = async (req, res, next) => {
 
     const chatRoom = await getChatRoomAdminService(userId, id);
     res.status(201).json({ chatRoom });
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
+
+exports.getAllConversation = async (req, res, next) => {
+  try {
+    const sort = await sortNewChat();
+    res.status(200).json({ sort });
   } catch (error) {
     console.log(error);
     next(error);
