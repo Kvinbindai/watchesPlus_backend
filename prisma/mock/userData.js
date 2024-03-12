@@ -1,93 +1,93 @@
 
 module.exports.userData = [
     { //1
-        "firstName" : "admin",
-        "lastName" : "admin",
+        "firstName": "admin",
+        "lastName": "admin",
         "email": "watchespluscc16@gmail.com",
         "password": "123456",
-        "role" : "ADMIN"
+        "role": "ADMIN"
     },
     { //2
-        "firstName" : "kavin",
-        "lastName" : "kavin",
-        "email": "kavin@gmail.com",
+        "firstName": "kavin",
+        "lastName": "kavin",
+        "email": "kavinsanguansook@gmail.com",
         "password": "123456",
-        "role" : "USER",
-        "wallet" : {
-            "create" : {
-                "amount" : 50000
+        "role": "USER",
+        "wallet": {
+            "create": {
+                "amount": 50000
             }
         }
     },
     { //3
-        "firstName" : "big",
-        "lastName" : "big",
-        "email": "big@gmail.com",
+        "firstName": "big",
+        "lastName": "big",
+        "email": "pongsatornbpst@gmail.com",
         "password": "123456",
-        "role" : "USER",
-        "wallet" : {
-            "create" : {
-                "amount" : 50000
+        "role": "USER",
+        "wallet": {
+            "create": {
+                "amount": 50000
             }
         }
     },
     { //4
-        "firstName" : "ohm",
-        "lastName" : "ohm",
-        "email": "ohm@gmail.com",
+        "firstName": "ohm",
+        "lastName": "ohm",
+        "email": "ohmmpakpoomm@gmail.com",
         "password": "123456",
-        "role" : "USER",
-        "wallet" : {
-            "create" : {
-                "amount" : 50000
+        "role": "USER",
+        "wallet": {
+            "create": {
+                "amount": 50000
             }
         }
     },
     { //5
-        "firstName" : "sun",
-        "lastName" : "sun",
-        "email": "sun@gmail.com",
+        "firstName": "sun",
+        "lastName": "sun",
+        "email": "r.narongdej@gmail.com",
         "password": "123456",
-        "role" : "USER",
-        "wallet" : {
-            "create" : {
-                "amount" : 50000
+        "role": "USER",
+        "wallet": {
+            "create": {
+                "amount": 50000
             }
         }
     },
     { //6
-        "firstName" : "nae",
-        "lastName" : "nae",
-        "email": "nae@gmail.com",
+        "firstName": "nae",
+        "lastName": "nae",
+        "email": "chanintorn.j39@gmail.com",
         "password": "123456",
-        "role" : "USER",
-        "wallet" : {
-            "create" : {
-                "amount" : 50000
+        "role": "USER",
+        "wallet": {
+            "create": {
+                "amount": 50000
             }
         }
     },
     { //7
-        "firstName" : "best",
-        "lastName" : "best",
-        "email": "best@gmail.com",
+        "firstName": "best",
+        "lastName": "best",
+        "email": "charmybest@gmail.com",
         "password": "123456",
-        "role" : "USER",
-        "wallet" : {
-            "create" : {
-                "amount" : 50000
+        "role": "USER",
+        "wallet": {
+            "create": {
+                "amount": 50000
             }
         }
     },
     { //8
-        "firstName" : "seller",
-        "lastName" : "seller",
+        "firstName": "seller",
+        "lastName": "seller",
         "email": "seller@gmail.com",
         "password": "123456",
-        "role" : "USER",
-        "wallet" : {
-            "create" : {
-                "amount" : 50000
+        "role": "USER",
+        "wallet": {
+            "create": {
+                "amount": 50000
             }
         }
     },
