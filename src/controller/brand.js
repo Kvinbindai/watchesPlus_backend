@@ -53,7 +53,7 @@ module.exports.addBrand = async (req, res, next) => {
 module.exports.editBrand = async (req, res, next) => {
   try {
     const { brandId } = req.params;
-    console.log(req.file, req.body, "try upload");
+
     if (req.file) {
       req.body.brandImage = await services.upload.upload(req.file.path);
       fs.unlink(req.file.path);
