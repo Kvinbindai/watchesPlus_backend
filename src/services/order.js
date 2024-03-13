@@ -11,8 +11,8 @@ module.exports.findOrderOnWatchId = async (userId, watchId) => {
       where: {
         watchId: watchId,
         status: "PENDING",
-        NOT : {
-          walletId : myWallet.id
+        NOT: {
+          walletId: myWallet.id
         }
       },
       orderBy: {
@@ -24,8 +24,8 @@ module.exports.findOrderOnWatchId = async (userId, watchId) => {
         inventory: {
           watchId: watchId,
           status: "SELLING",
-          NOT : {
-            userId : userId
+          NOT: {
+            userId: userId
           }
         },
       },
@@ -190,7 +190,7 @@ module.exports.createBuyOrder = async (buyerWallet, body) => {
         price: body.price,
         type: "PLACED",
         buyOrderId: createOrder.id,
-        watchId : createOrder.watchId
+        watchId: createOrder.watchId
       },
     });
     return createOrder;
@@ -280,7 +280,7 @@ module.exports.findMostBuyOrderAndSaleOrder = async () => {
         watchId: 'desc',
       },
     },
-    take: 4,
+    // take: 4,
   });
 
   // Fetching watch details for the grouped buy orders
