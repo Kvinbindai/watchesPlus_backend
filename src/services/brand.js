@@ -7,6 +7,7 @@ module.exports.getBrandById = async (brandId) =>
 module.exports.createBrand = async (data) =>
   await prisma.brand.create({ data });
 module.exports.updateBrand = async (brandId, data) => {
+  console.log(data);
   // if (!data) data = await this.getBrandById(brandId);
   await prisma.brand.update({ where: { id: brandId }, data });
 };
