@@ -4,10 +4,8 @@ const app = express();
 const cors = require("cors");
 const server = http.createServer(app);
 
-// const server = require("./app");
 const { Server } = require("socket.io");
 const prisma = require("./config/prisma");
-// const dotenv = require("dotenv").config();
 
 module.exports = function socketServer() {
   app.use(express.json());
@@ -31,21 +29,15 @@ module.exports = function socketServer() {
     const authUser = socket.handshake.auth.senderId;
     console.log(socket.handshake.auth, "auth");
     onlineUser[authUser] = socket.id;
-    // console.log(authUser, "authUser");
     next();
   });
 
   io.on("connection", (socket) => {
     console.log("Client is connected");
     console.log(onlineUser, "onlineUser");
-    // socket.on("message", (msg) => {
-    //   io.emit("received", msg);
-    // });
 
     socket.on("message", async (data) => {
       const { receiverId, msg, chatRoomId } = data;
-      console.log(data, "---------------");
-      console.log(onlineUser);
       const res = await prisma.chatMessage.create({
         data: {
           senderId: socket.handshake.auth.senderId,
@@ -70,9 +62,7 @@ module.exports = function socketServer() {
     });
   });
 
-  //   const PORT = process.env.PORT || 8080;
   const PORT = process.env.CHAT_PORT;
-  // console.log(PORT);
   server.listen(PORT, () => {
     console.log(`Socket io server is running on port ${PORT}`);
   });
