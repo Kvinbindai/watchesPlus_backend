@@ -4,7 +4,7 @@ const authenticate = require("../middlewares/authenticate");
 const authenticateAdmin = require("../middlewares/authenticateAdmin");
 const {
   validateAddBrand,
-  // validateEditBrand,
+  validateEditBrand,
 } = require("../middlewares/validator/brand");
 const upload = require("../middlewares/upload");
 const brandRoute = express.Router();
