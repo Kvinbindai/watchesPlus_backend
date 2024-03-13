@@ -8,7 +8,7 @@ const addBrandSchema = Joi.object({
   }),
 });
 const editBrandSchema = Joi.object({
-  name: Joi.string().optional().trim(),
+  name: Joi.string().optional(),
 });
 
 exports.validateAddBrand = validate(addBrandSchema);
