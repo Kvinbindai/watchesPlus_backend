@@ -251,9 +251,8 @@ module.exports.updateBuyOrderToCancel = async (id) => {
 module.exports.updateSaleOrderToCancel = async (id) => {
   return await prisma.$transaction(async (tx) => {
     // 1.update saleOrder to cancel
-    const updateSaleOrder = await tx.saleOrder.update({
+    const updateSaleOrder = await tx.saleOrder.delete({
       where: { id: id },
-      data: { status: "CANCELED" },
     });
     //2.คืนของ inventory
     const returnItem = await tx.inventory.update({
