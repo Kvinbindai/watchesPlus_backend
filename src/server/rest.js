@@ -19,11 +19,12 @@ const walletRoute = require("../router/wallet");
 const authenticate = require("../middlewares/authenticate");
 const livechatRoute = require("../router/livechat");
 const profileRoute = require("../router/profile");
-const transactionRoute = require('../router/transaction')
+const transactionRoute = require("../router/transaction");
 const shippingRoute = require("../router/shipping");
 const wishlistRoute = require("../router/wishlist");
 const addressRoute = require("../router/address");
-const mailRoute = require("../router/mail")
+const mailRoute = require("../router/mail");
+const dashboardAdminRoute = require("../router/dashboradAdmin");
 
 //=====================================================Server Zone
 module.exports = function restApiServer(app) {
@@ -51,11 +52,14 @@ module.exports = function restApiServer(app) {
   app.use("/wallet", walletRoute);
   app.use("/livechat", authenticate, livechatRoute);
   app.use("/profile", profileRoute);
-  app.use('/transaction', transactionRoute)
+  app.use("/transaction", transactionRoute);
   app.use("/shipping", shippingRoute);
   app.use("/wishlist", wishlistRoute);
-  app.use('/address', addressRoute)
-  app.use("/mail", mailRoute)
+  app.use("/address", addressRoute);
+  app.use("/mail", mailRoute);
+
+  //===================================================== BIG ZONE ADMIN
+  app.use("/dashboardAdmin", dashboardAdminRoute);
 
   //=====================================================Throwing Zone
   app.use(notFound);
