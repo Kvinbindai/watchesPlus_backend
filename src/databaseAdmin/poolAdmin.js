@@ -1,11 +1,11 @@
 const mysql = require("mysql2/promise");
 
 const pool = mysql.createPool({
-  host: "103.74.254.49",
-  user: "User2",
-  password: "ccgrp16200224",
-  database: "GROUP2",
-  port: "3206",
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  port: process.env.DB_PORT,
 }); // ค่อยมาเปลี่ยนเป็น database บน
 
 const execute = async (sql, values) => {
