@@ -1,30 +1,32 @@
 const execute = require("../../databaseAdmin/poolAdmin");
 
+const dataName = process.env.DB_NAME;
+
 exports.dashboradBrand = async (req, res, next) => {
   const sumBrand = await execute(
-    `SELECT count(b.id) sumBrand FROM GROUP2.brands b;`
+    `SELECT count(b.id) sumBrand FROM ${dataName}.brands b;`
   );
   const sumWatches = await execute(
-    `SELECT count(w.id) sumWatches FROM GROUP2.watches w;`
+    `SELECT count(w.id) sumWatches FROM ${dataName}.watches w;`
   );
   const sumUser = await execute(
-    `SELECT count(u.id) sumUser FROM GROUP2.users u;`
+    `SELECT count(u.id) sumUser FROM ${dataName}.users u;`
   );
   const sumShipping = await execute(
-    `SELECT count(s.id) sumShipping FROM GROUP2.shipping s where s.status = "SUCCESS";`
+    `SELECT count(s.id) sumShipping FROM ${dataName}.shipping s where s.status = "SUCCESS";`
   );
   const totalWallet = await execute(
-    `SELECT sum(w.amount) totalWallet FROM GROUP2.wallets w;`
+    `SELECT sum(w.amount) totalWallet FROM ${dataName}.wallets w;`
   );
   const totalTransaction = await execute(
-    `SELECT sum(wt.price) totalTransaction FROM GROUP2.transaction_wallets wt where wt.type = "TRANSFER";`
+    `SELECT sum(wt.price) totalTransaction FROM ${dataName}.transaction_wallets wt where wt.type = "TRANSFER";`
   );
   const chartBrand = await execute(
-    `SELECT b.name,count(b.name) value FROM GROUP2.watches w join brands b on w.brand_id = b.id group by w.brand_id`
+    `SELECT b.name,count(b.name) value FROM ${dataName}.watches w join brands b on w.brand_id = b.id group by w.brand_id`
   );
   const chartTransaction = await execute(
     `SELECT DATE(wt.created_at) as name, SUM(wt.price) as sumprice 
-    FROM GROUP2.transaction_wallets wt 
+    FROM ${dataName}.transaction_wallets wt 
     WHERE wt.type = 'TRANSFER' 
     GROUP BY DATE(wt.created_at) 
     ORDER BY DATE(wt.created_at) asc
@@ -35,11 +37,11 @@ exports.dashboradBrand = async (req, res, next) => {
     `SELECT 
     b.name, COUNT(b.name) value
 FROM
-    GROUP2.transaction_wallets wt
+    ${dataName}.transaction_wallets wt
         JOIN
-    GROUP2.watches w ON wt.watch_id = w.id
+    ${dataName}.watches w ON wt.watch_id = w.id
         JOIN
-    GROUP2.brands b ON w.brand_id = b.id
+    ${dataName}.brands b ON w.brand_id = b.id
 WHERE
     wt.type = 'TRANSFER'
 GROUP BY w.brand_id`
