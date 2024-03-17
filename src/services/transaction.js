@@ -177,28 +177,5 @@ exports.getAllTransactionFromWatchId = async (watchId) => {
     },orderBy : {
       createdAt : 'desc'
     }
-    // select: {
-    //   fromWallet: {
-    //     select: {
-    //       user: {
-    //         select: {
-    //           profileImage: true,
-    //           firstName: true,
-    //         },
-    //       },
-    //     },
-    //   },
-    //   toWallet: {
-    //     select: {
-    //       user: {
-    //         select: {
-    //           profileImage: true,
-    //           firstName: true,
-    //         },
-    //       },
-    //     },
-    //   },
-    //   price: true,
-    // },
   });
 };

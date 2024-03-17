@@ -17,4 +17,18 @@ module.exports.findProfileInfoByUserId = async (userId) =>
   });
 
 module.exports.updateProfileInfoByUserId = async (id, data) =>
-  await prisma.user.update({ where: { id }, data });
+  await prisma.user.update({
+    where: { id },
+    data,
+    include: {
+      wallet: {
+        select: {
+          id: true,
+          amount: true,
+        },
+      },
+      royalty: {
+        select: { point: true },
+      },
+    },
+  });
